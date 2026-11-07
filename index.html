@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FutureFields Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app shell — left rail on desktop, bottom tab bar on phones; one working view at a time */
+:root{
+  --bg:#EEF0E6; --surface:#FAFAF4; --surface-2:#E4E8DA; --ink:#1B2A21; --muted:#56655A; --line:#D3D8C6;
+  --primary:#1E3B2C; --on-primary:#F3F4EA; --accent:#8F6B00; --accent-soft:#F2E4B4; --on-accent-soft:#4A3800;
+  --ok:#2C7A4B; --warn:#A8501C; --warn-soft:#F6DECF;
+  --f-brassica:#3F7D5A; --f-allium:#8A5FA8; --f-legume:#B8861A; --f-root:#BC5F2E; --f-leaf:#5C9E36; --f-nightshade:#B23A48; --f-cover:#617687;
+  --display:'Fraunces', Georgia, 'Times New Roman', serif;
+  --body:'Figtree', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111813; --surface:#18221B; --surface-2:#223026; --ink:#E9ECE2; --muted:#A0AEA3; --line:#2E3D33;
+  --primary:#9FD0B0; --on-primary:#10231A; --accent:#E3C25A; --accent-soft:#3A3218; --on-accent-soft:#F2E2A8;
+  --ok:#74C795; --warn:#EE9866; --warn-soft:#3D2418;
+  --f-brassica:#6FB58C; --f-allium:#B793D1; --f-legume:#D9AE4A; --f-root:#E08A5A; --f-leaf:#8CCB64; --f-nightshade:#E07280; --f-cover:#93A8B8;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111813; --surface:#18221B; --surface-2:#223026; --ink:#E9ECE2; --muted:#A0AEA3; --line:#2E3D33;
+  --primary:#9FD0B0; --on-primary:#10231A; --accent:#E3C25A; --accent-soft:#3A3218; --on-accent-soft:#F2E2A8;
+  --ok:#74C795; --warn:#EE9866; --warn-soft:#3D2418;
+  --f-brassica:#6FB58C; --f-allium:#B793D1; --f-legume:#D9AE4A; --f-root:#E08A5A; --f-leaf:#8CCB64; --f-nightshade:#E07280; --f-cover:#93A8B8;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100%}
+.rail{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:24px;padding:24px 16px;background:var(--surface);border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-family:var(--display);font-size:21px;font-weight:600;letter-spacing:-.01em}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:500}
+.nav a svg{width:20px;height:20px;flex:none}
+.nav a:hover{background:var(--surface-2);color:var(--ink)}
+.nav a[aria-current="page"]{background:var(--primary);color:var(--on-primary)}
+.rail .demo-note{margin-top:auto;font-size:12.5px;color:var(--muted);padding:12px;border:1px dashed var(--line);border-radius:10px}
+main{min-width:0;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.farm{display:flex;align-items:center;gap:12px;min-width:0}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--on-accent-soft);display:grid;place-items:center;font-weight:700;flex:none}
+.farm small{display:block;color:var(--muted);font-size:13px}
+.farm strong{font-weight:600}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
+.lang button{border:0;background:transparent;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.banner{font-size:13px;color:var(--on-accent-soft);background:var(--accent-soft);border-radius:10px;padding:8px 12px}
+.h1{font-family:var(--display);font-size:clamp(26px,3.2vw,36px);font-weight:600;letter-spacing:-.015em;line-height:1.15}
+.sub{color:var(--muted)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card h2{font-size:16px;font-weight:600}
+.card .head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .head a,.linkbtn{font-size:13px;color:var(--primary);font-weight:600;text-decoration:none;background:none;border:0;padding:0}
+.big{font-family:var(--display);font-size:38px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--primary);border-radius:99px}
+.bar.accent i{background:var(--accent)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.num{font-variant-numeric:tabular-nums}
+.list{display:flex;flex-direction:column}
+.list > *{padding:10px 0;border-top:1px solid var(--line)}
+.list > *:first-child{border-top:0;padding-top:0}
+.task{display:flex;gap:10px;align-items:flex-start}
+.task input{width:18px;height:18px;margin-top:2px;accent-color:var(--primary);flex:none}
+.task.done span{text-decoration:line-through;color:var(--muted)}
+.alert{background:var(--accent-soft);color:var(--on-accent-soft);border-color:transparent}
+.alert .eyebrow{color:var(--on-accent-soft)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:10px;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--primary);color:var(--on-primary);border-color:transparent}
+.btn.ghost{background:transparent}
+.alert .btn{background:transparent;border-color:currentColor;color:inherit}
+.alert .btn.primary{background:var(--on-accent-soft);color:var(--accent-soft)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink);white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.accent{background:var(--accent-soft);color:var(--on-accent-soft)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;background:var(--fam);flex:none}
+.beds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.beds.tunnel{grid-template-columns:repeat(2,minmax(0,1fr))}
+.bed{--fam:var(--f-cover);text-align:left;border:1px solid var(--line);border-left:5px solid var(--fam);border-radius:10px;padding:10px 12px;background:color-mix(in srgb,var(--fam) 13%,var(--surface));display:flex;flex-direction:column;gap:6px;min-width:0}
+.bed:hover{border-color:var(--fam)}
+.bed[aria-pressed="true"]{outline:2px solid var(--fam);outline-offset:1px}
+.bed .id{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em}
+.bed .crop{font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.bed .bar{height:5px}
+.bed .bar i{background:var(--fam)}
+.zone{display:flex;flex-direction:column;gap:8px}
+.zone h3{font-size:13px;font-weight:600;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{--fam:var(--f-cover);font-size:12.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--fam);color:var(--ink);background:color-mix(in srgb,var(--fam) 12%,transparent)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:500}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:600}
+.input,select.input,textarea.input{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;width:100%;min-width:0}
+textarea.input{resize:vertical;min-height:72px}
+.inline{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.inline .field{flex:1;min-width:120px}
+.suggest{border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.thread{display:flex;flex-direction:column;gap:8px;cursor:pointer;background:none;border:0;text-align:left;padding:12px 0;width:100%}
+.thread h3{font-size:15.5px;font-weight:600}
+.answers{display:flex;flex-direction:column;gap:10px;padding:4px 0 6px 14px;border-left:2px solid var(--line)}
+.answers b{font-weight:600}
+.person{display:flex;gap:10px;align-items:center}
+.person .avatar{width:34px;height:34px;font-size:13px;background:var(--surface-2);color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:0 8px 8px 0}
+td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:middle}
+.tablewrap{overflow-x:auto}
+.switch{position:relative;width:42px;height:24px;border-radius:99px;border:0;background:var(--line);flex:none;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--surface);transition:left .15s}
+.switch[aria-checked="true"]{background:var(--primary)}
+.switch[aria-checked="true"]::after{left:21px}
+.stack{display:flex;flex-direction:column;gap:8px}
+.pool-row{display:grid;grid-template-columns:120px 1fr 64px;gap:10px;align-items:center;font-size:14px}
+.pool-row .bar{height:12px}
+.pool-row.me .bar i{background:var(--accent)}
+.bench{display:flex;flex-direction:column;gap:6px}
+.bench .bars{display:grid;grid-template-columns:72px 1fr 88px;gap:4px 10px;align-items:center;font-size:13px}
+.bench .bar{height:10px}
+.bench .peer .bar i{background:var(--muted)}
+.locked{padding:16px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:14px}
+.parcel{display:flex;flex-direction:column;gap:10px}
+.match{font-family:var(--display);font-size:30px;font-weight:600;color:var(--primary);line-height:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom, 0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.roles{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--surface);align-self:flex-start}
+.roles button{border:0;background:transparent;padding:8px 14px;border-radius:9px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+.roles button svg{width:18px;height:18px}
+.roles button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.offer{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:var(--bg);min-width:0}
+.offer .farmname{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.offer b{font-weight:600;font-size:15.5px}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.filters button[aria-pressed="true"]{border-color:var(--primary);color:var(--primary);background:color-mix(in srgb,var(--primary) 10%,transparent)}
+.star{color:var(--accent);font-size:15px;line-height:1}
+.wish{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.wish h3{font-size:17px;font-weight:600}
+.alloc{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 12px;align-items:center;font-size:14px}
+.alloc .who{display:flex;align-items:center;gap:6px;min-width:0}
+.alloc .prio{font-size:11.5px;font-weight:700;color:var(--on-accent-soft);background:var(--accent-soft);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.fill{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden;display:flex}
+.fill i{display:block;height:100%}
+.fav{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.fav:first-child{border-top:0}
+.fav .n{flex:1;min-width:0}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:30px;height:30px;display:grid;place-items:center;font-weight:700;color:var(--muted);padding:0}
+.iconbtn:disabled{opacity:.35;cursor:default}
+.bid{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.bid.chosen{border-color:var(--ok)}
+.route{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px}
+.route span.stop{padding:3px 9px;border-radius:999px;background:var(--surface-2);font-weight:600}
+.route span.end{background:var(--primary);color:var(--on-primary)}
+.tabbar{display:none}
+@media (max-width: 1000px){
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .split{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width: 760px){
+  .app{grid-template-columns:1fr}
+  .rail{display:none}
+  main{padding-block:14px calc(96px + env(safe-area-inset-bottom, 0px))}
+  .g3,.g2{grid-template-columns:minmax(0,1fr)}
+  .beds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding:6px max(6px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px));justify-content:space-around}
+  .tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:600;color:var(--muted);text-decoration:none;padding:4px 2px;border-radius:8px;flex:1;min-width:0;text-align:center}
+  .tabbar a svg{width:22px;height:22px}
+  .tabbar a[aria-current="page"]{color:var(--primary)}
+  .pool-row{grid-template-columns:96px 1fr 52px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom, 0px))}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="rail" aria-label="Navigation">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="var(--primary)"/><path d="M6 27c6-5 22-5 28 0v3a16 16 0 0 1-28 0z" fill="var(--accent)"/><path d="M20 30V16m0 6c-4 0-6-3-6-6 4 0 6 2 6 6zm0-3c3 0 6-2 6-6-4 0-6 2-6 6z" stroke="var(--on-primary)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <b>FutureFields</b>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <p class="demo-note" id="railNote"></p>
+  </aside>
+  <main>
+    <div class="wrap">
+      <div class="top">
+        <div class="farm"><div class="avatar" aria-hidden="true">MK</div><div><strong>Kildegården</strong><small id="farmMeta"></small></div></div>
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" id="lang-da" data-lang="da">DA</button>
+          <button type="button" id="lang-en" data-lang="en">EN</button>
+          <button type="button" id="lang-es" data-lang="es">ES</button>
+        </div>
+      </div>
+      <p class="banner" id="banner"></p>
+      <div id="view" class="wrap" style="gap:20px;width:100%"></div>
+    </div>
+  </main>
+</div>
+<nav class="tabbar" id="tabbar" aria-label="Navigation"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const ICONS={
+  overblik:'<path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-4H4zm10-11h6V4h-6z"/>',
+  plan:'<path d="M4 5h16v14H4zM4 10h16M10 10v9M15 10v9"/>',
+  faellesskab:'<path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 3-5 6-5s6 2 6 5m0-5c1-.6 2-1 3-1 3 0 5 2 5 5"/>',
+  afsaetning:'<path d="M4 9l2-5h12l2 5M4 9v11h16V9M4 9h16M9 20v-6h6v6"/>',
+  noegletal:'<path d="M4 20V10m6 10V4m6 16v-8m4 8H2"/>',
+  jord:'<path d="M3 18c4-6 7-6 9-3s5 3 9-3M3 9l5-4 4 3 4-3 5 4"/>',
+  marked:'<path d="M3 7h18l-2 5H5zM5 12v8h14v-8M9 16h6M7 7l2-3h6l2 3"/>'
+};
+const ROUTES=['overblik','plan','faellesskab','afsaetning','marked','noegletal','jord'];
+
+const I18N={
+da:{
+ nav_overblik:'Overblik',nav_plan:'Dyrkningsplan',nav_faellesskab:'Fællesskab',nav_afsaetning:'Afsætning',nav_noegletal:'Nøgletal',nav_jord:'Landmatching',
+ tab_overblik:'Overblik',tab_plan:'Plan',tab_faellesskab:'Fællesskab',tab_afsaetning:'Salg',tab_noegletal:'Nøgletal',tab_jord:'Jord',
+ farmMeta:'3,2 ha · Midtsjælland · sæson 3',
+ banner:'Klikbar prototype. Alle gårde, personer og tal er eksempler – Kildegården er fiktiv.',
+ railNote:'Prototype til pilotinterviews. Ændringer gemmes ikke.',
+ hello:'Godmorgen, Maja',date:'Fredag 6. november · uge 45',
+ today:'I dag',alert_t:'AI-varsel',alert_body:'Nattefrost ventet onsdag nat (−3 °C). Dæk vintersalaten i tunnel T2 og spinaten i bed B3 med fiberdug.',
+ alert_add:'Tilføj til opgaver',alert_dismiss:'Afvis',alert_added:'Tilføjet til opgaver',alert_dismissed:'Varslet er afvist.',
+ harvest:'Høst vs. plan',harvest_sub:'Hele sæsonen, alle bede',orders:'Ordrer',orders_open:'åbne ordrer',budget:'Økonomi',budget_sub:'Omsætning år til dato vs. budget',
+ grant:'Eksempel: ansøgningsfrist for tilskud om 14 dage',community:'Fællesskab',see_all:'Se alle',open_plan:'Åbn plan',
+ plan_title:'Dyrkningsplan',plan_sub:'Klik på et bed for at registrere høst og få forslag til næste afgrøde.',
+ field:'Friland',tunnel:'Tunnel',bed:'Bed',sown:'Sået/plantet',expected:'Forventet høst',family:'Plantefamilie',harvested:'Høstet',planned:'Planlagt',
+ history:'Sædskifte, sidste 3 sæsoner',reg_harvest:'Registrér høst',kg:'kg',save:'Gem',obs:'Observation',obs_ph:'Skriv eller indtal en observation …',
+ obs_note:'I app-versionen kan observationer indtales i marken.',ai_next:'Foreslå næste afgrøde',ai_title:'AI-forslag til næste sæson',
+ ai_reason:'Bedet har haft {h} de sidste sæsoner. Et skifte til {f} bryder sygdomscyklussen og passer til sædskiftet.',
+ ai_basis:'Bygger på bedets historik, din jordtype og høst fra 9 gårde med lignende jord.',
+ saved_h:'Høst registreret',saved_o:'Observation gemt',choose_bed:'Vælg et bed',
+ com_title:'Fællesskab',com_sub:'Spørg andre regenerative landmænd og eksperter – svar fra folk med lignende jord og afgrøder.',
+ ask:'Stil et spørgsmål',ask_ph:'Fx: Hvordan holder I kålfluen ude uden net?',topic:'Emne',post:'Send spørgsmål',
+ waiting:'Sendt til 6 landmænd med lignende jord. Du får besked, når nogen svarer.',answers:'svar',you:'Dig',
+ mentors:'Mentorer',events:'Arrangementer',contact:'Kontakt',sent:'Besked sendt (demo)',signup:'Tilmeld',signed:'Tilmeldt',
+ m_title:'Afsætning',m_sub:'Ordrer, webshop og fælles levering til større kunder.',
+ week_rev:'Omsætning denne uge',open_orders:'Åbne ordrer',csa:'CSA-medlemmer',
+ incoming:'Indkomne ordrer',accept:'Acceptér',accepted:'Accepteret',due:'Levering',
+ products:'Produkter',product:'Produkt',price:'Pris',stock:'Lager',webshop:'På webshop',
+ pool_title:'Fælles levering',pool_sub:'Fire gårde samler volumen til et storkøkken, der ikke kan købe hos én lille gård.',
+ pool_need:'Behov',pool_week:'kg rodfrugter pr. uge',pool_mine:'Mit bidrag (kg/uge)',pool_missing:'mangler',pool_full:'Behovet er dækket',update:'Opdatér',
+ n_title:'Nøgletal',n_sub:'Din gård sammenlignet med lignende regenerative gårde.',
+ share:'Del mine nøgletal anonymt',share_txt:'Du ser andres tal, når du selv deler. Data deles kun anonymt og kan altid trækkes tilbage.',
+ locked:'Slå deling til for at se, hvordan du ligger i forhold til 23 lignende gårde.',
+ me:'Min gård',peers:'Median',peers_note:'Sammenlignet med 23 gårde på 1–5 ha med grøntsager (eksempeldata).',
+ j_title:'Landmatching',j_sub:'Ledig jord, der matcher dine kompetencer, ambitioner og geografi.',
+ match:'match',why:'Hvorfor',interest:'Vis interesse',interested:'Interesse sendt',layout:'Se plug-and-play-plan',hide:'Skjul plan',
+ layout_t:'Forslag til opstart (AI-skitse)',from:'fra'
+},
+en:{
+ nav_overblik:'Overview',nav_plan:'Growing plan',nav_faellesskab:'Community',nav_afsaetning:'Sales',nav_noegletal:'Benchmarks',nav_jord:'Land matching',
+ tab_overblik:'Overview',tab_plan:'Plan',tab_faellesskab:'Community',tab_afsaetning:'Sales',tab_noegletal:'Benchmarks',tab_jord:'Land',
+ farmMeta:'3.2 ha · Central Zealand · season 3',
+ banner:'Clickable prototype. All farms, people and figures are examples – Kildegården is fictional.',
+ railNote:'Prototype for pilot interviews. Changes are not saved.',
+ hello:'Good morning, Maja',date:'Friday 6 November · week 45',
+ today:'Today',alert_t:'AI alert',alert_body:'Night frost expected Wednesday (−3 °C). Cover the winter salad in tunnel T2 and the spinach in bed B3 with fleece.',
+ alert_add:'Add to tasks',alert_dismiss:'Dismiss',alert_added:'Added to tasks',alert_dismissed:'Alert dismissed.',
+ harvest:'Harvest vs. plan',harvest_sub:'Whole season, all beds',orders:'Orders',orders_open:'open orders',budget:'Finances',budget_sub:'Revenue year to date vs. budget',
+ grant:'Example: grant application deadline in 14 days',community:'Community',see_all:'See all',open_plan:'Open plan',
+ plan_title:'Growing plan',plan_sub:'Click a bed to record harvest and get a suggestion for the next crop.',
+ field:'Open field',tunnel:'Tunnel',bed:'Bed',sown:'Sown/planted',expected:'Expected harvest',family:'Plant family',harvested:'Harvested',planned:'Planned',
+ history:'Rotation, last 3 seasons',reg_harvest:'Record harvest',kg:'kg',save:'Save',obs:'Observation',obs_ph:'Type or dictate an observation …',
+ obs_note:'In the app version, observations can be dictated in the field.',ai_next:'Suggest next crop',ai_title:'AI suggestion for next season',
+ ai_reason:'This bed has had {h} in recent seasons. Switching to {f} breaks the disease cycle and fits the rotation.',
+ ai_basis:'Based on the bed’s history, your soil type and harvests from 9 farms with similar soil.',
+ saved_h:'Harvest recorded',saved_o:'Observation saved',choose_bed:'Choose a bed',
+ com_title:'Community',com_sub:'Ask other regenerative farmers and experts – answers from people with similar soil and crops.',
+ ask:'Ask a question',ask_ph:'E.g. How do you keep cabbage root fly out without netting?',topic:'Topic',post:'Post question',
+ waiting:'Sent to 6 farmers with similar soil. You’ll be notified when someone answers.',answers:'answers',you:'You',
+ mentors:'Mentors',events:'Events',contact:'Contact',sent:'Message sent (demo)',signup:'Sign up',signed:'Signed up',
+ m_title:'Sales',m_sub:'Orders, web shop and pooled delivery to larger customers.',
+ week_rev:'Revenue this week',open_orders:'Open orders',csa:'CSA members',
+ incoming:'Incoming orders',accept:'Accept',accepted:'Accepted',due:'Delivery',
+ products:'Products',product:'Product',price:'Price',stock:'Stock',webshop:'In web shop',
+ pool_title:'Pooled delivery',pool_sub:'Four farms pool volume for a public kitchen that cannot buy from one small farm.',
+ pool_need:'Demand',pool_week:'kg root vegetables per week',pool_mine:'My contribution (kg/week)',pool_missing:'missing',pool_full:'Demand is covered',update:'Update',
+ n_title:'Benchmarks',n_sub:'Your farm compared with similar regenerative farms.',
+ share:'Share my figures anonymously',share_txt:'You see others’ figures when you share your own. Data is only shared anonymously and can be withdrawn at any time.',
+ locked:'Turn on sharing to see how you compare with 23 similar farms.',
+ me:'My farm',peers:'Median',peers_note:'Compared with 23 farms of 1–5 ha growing vegetables (example data).',
+ j_title:'Land matching',j_sub:'Available land that matches your skills, ambitions and location.',
+ match:'match',why:'Why',interest:'Express interest',interested:'Interest sent',layout:'See plug-and-play plan',hide:'Hide plan',
+ layout_t:'Start-up proposal (AI sketch)',from:'from'
+}};
+
+const ES={
+'Brassicas':'Crucíferas','Alliums':'Aliáceas','Legumes':'Leguminosas','Root crops':'Raíces','Leafy greens':'Hojas verdes','Nightshades':'Solanáceas','Green manure':'Abono verde',
+'Kale':'Col rizada','Pointed cabbage':'Col puntiaguda','Leeks':'Puerros','Garlic':'Ajo','Onions':'Cebollas','Beans':'Judías','Peas':'Guisantes','Carrots':'Zanahorias','Beetroot':'Remolacha','Parsnip':'Chirivía','Spinach':'Espinacas','Winter salad':'Lechuga de invierno','Chard':'Acelgas','Tomatoes':'Tomates','Potatoes':'Patatas','Clover and rye':'Trébol y centeno',
+'Plant garlic in bed C2':'Plantar ajo en el bancal C2','Harvest kale in bed A1 for restaurant':'Cosechar col rizada del bancal A1 para el restaurante','Pack 28 CSA boxes':'Preparar 28 cajas de la CSA','Sow clover and rye in bed B4':'Sembrar trébol y centeno en el bancal B4','Cover T2 and B3 with fleece before Wednesday':'Cubrir T2 y B3 con manta térmica antes del miércoles',
+'12 kg kale, 8 kg beetroot':'12 kg de col rizada, 8 kg de remolacha','Fri 13/11':'vie. 13/11','Veg boxes, eggs':'Cajas de verdura, huevos','Sat 14/11':'sáb. 14/11','20 kg leeks':'20 kg de puerros','Tue 17/11':'mar. 17/11','Veg box, large':'Caja de verdura, grande','Eggs, 10':'Huevos, 10 uds.',
+'How do you keep cabbage root fly out without netting?':'¿Cómo evitáis la mosca de la col sin malla?','1.5 ha · season 2 · Funen':'1,5 ha · temporada 2 · Fionia','experienced, 12 seasons':'con experiencia, 12 temporadas',
+'We plant late (after the first generation) and mix dill between rows. Halved the attacks for us.':'Plantamos tarde (después de la primera generación) y ponemos eneldo entre las hileras. Nos redujo los ataques a la mitad.',
+'summary of 14 threads':'resumen de 14 hilos','Most mentioned methods: late planting, collars around stems and intercropping. Work best combined.':'Métodos más citados: plantación tardía, collarines en los tallos y cultivos asociados. Funcionan mejor combinados.',
+'Which green manure before garlic on clay soil?':'¿Qué abono verde antes del ajo en suelo arcilloso?','4 ha · season 3 · East Jutland':'4 ha · temporada 3 · Jutlandia oriental','adviser':'asesor',
+'Phacelia or oats that winter-kill. Avoid clover right before – too much nitrogen.':'Facelia o avena que muera con el invierno. Evita el trébol justo antes: demasiado nitrógeno.',
+'Anyone sharing a cider press in Central Zealand?':'¿Alguien comparte una prensa de sidra en el centro de Selandia?','7 ha · season 6':'7 ha · temporada 6','18 ha · Samsø':'18 ha · Samsø',
+'Not on Zealand, but we lend ours if you collect. Message me.':'En Selandia no, pero prestamos la nuestra si venís a por ella. Escríbeme.',
+'Equipment':'Equipos','Soil':'Suelo','Sales':'Ventas','12 seasons · vegetables and CSA':'12 temporadas · hortalizas y CSA','Agroforestry · eggs · tourism':'Agroforestería · huevos · turismo','Finances for small farms':'Finanzas para fincas pequeñas',
+'Sat 21/11':'sáb. 21/11','Farm walk: winter growing in tunnels':'Visita a finca: cultivo de invierno en túneles','Søbakken, 18 km':'Søbakken, 18 km','Thu 3/12':'jue. 3/12','Online: 2027 season plan with AI':'En línea: plan de temporada 2027 con IA','Online':'En línea',
+'Revenue per ha':'Facturación por ha','Hours per week on sales':'Horas semanales de ventas','Hours per week on admin':'Horas semanales de administración','Share of direct sales':'Proporción de venta directa','Harvest vs. plan':'Cosecha vs. plan',
+'Central Zealand, 11 km from you':'Centro de Selandia, a 11 km de ti','10-year lease, option of gradual ownership':'Arrendamiento a 10 años, con opción de propiedad gradual','South Funen, 140 km':'Sur de Fionia, 140 km','Shared use with existing fruit grower':'Uso compartido con un fruticultor','East Jutland, 210 km':'Jutlandia oriental, 210 km','Purchase option via land trust':'Opción de compra a través de un fondo de tierras',
+'Jerusalem artichokes':'Tupinambos','Squash':'Calabaza','Thu 19/11':'jue. 19/11','Fri 20/11':'vie. 20/11','Small, firm tubers – washed if possible':'Tubérculos pequeños y firmes, a ser posible lavados','Curly kale, no yellow leaves':'Col rizada, sin hojas amarillas','Fri 7–9':'vie. 7–9','Fri 8–11':'vie. 8–11',
+'Sandy clay loam, suited to vegetables':'Franco arcillo-arenoso, apto para hortalizas','Borehole and old barn':'Pozo y granero antiguo','Owner seeks succession':'El propietario busca relevo','Shelter from hedgerows':'Protección de setos vivos','Existing farm shop':'Tienda de finca ya existente','Far from your current customers':'Lejos de tus clientes actuales','Room for grazing and agroforestry':'Espacio para pastoreo y agroforestería','Requires irrigation investment':'Requiere inversión en riego','Larger than your current ambitions':'Más grande que tus ambiciones actuales'
+};
+I18N.es={
+ nav_overblik:'Resumen',nav_plan:'Plan de cultivo',nav_faellesskab:'Comunidad',nav_afsaetning:'Ventas',nav_noegletal:'Indicadores',nav_jord:'Buscar tierra',
+ tab_overblik:'Resumen',tab_plan:'Plan',tab_faellesskab:'Comunidad',tab_afsaetning:'Ventas',tab_noegletal:'Datos',tab_jord:'Tierras',
+ farmMeta:'3,2 ha · centro de Selandia · temporada 3',
+ banner:'Prototipo interactivo. Todas las fincas, personas y cifras son ejemplos: Kildegården es ficticia.',
+ railNote:'Prototipo para entrevistas piloto. Los cambios no se guardan.',
+ hello:'Buenos días, Maja',date:'Viernes 6 de noviembre · semana 45',
+ today:'Hoy',alert_t:'Alerta IA',alert_body:'Se espera helada el miércoles por la noche (−3 °C). Cubre la lechuga de invierno del túnel T2 y las espinacas del bancal B3 con manta térmica.',
+ alert_add:'Añadir a tareas',alert_dismiss:'Descartar',alert_added:'Añadido a tareas',alert_dismissed:'Alerta descartada.',
+ harvest:'Cosecha vs. plan',harvest_sub:'Toda la temporada, todos los bancales',orders:'Pedidos',orders_open:'pedidos abiertos',budget:'Finanzas',budget_sub:'Facturación del año vs. presupuesto',
+ grant:'Ejemplo: plazo de solicitud de ayuda en 14 días',community:'Comunidad',see_all:'Ver todo',open_plan:'Abrir plan',
+ plan_title:'Plan de cultivo',plan_sub:'Haz clic en un bancal para registrar la cosecha y recibir una sugerencia para el siguiente cultivo.',
+ field:'Campo abierto',tunnel:'Túnel',bed:'Bancal',sown:'Sembrado/plantado',expected:'Cosecha prevista',family:'Familia',harvested:'Cosechado',planned:'Previsto',
+ history:'Rotación, últimas 3 temporadas',reg_harvest:'Registrar cosecha',kg:'kg',save:'Guardar',obs:'Observación',obs_ph:'Escribe o dicta una observación …',
+ obs_note:'En la versión app, las observaciones se pueden dictar en el campo.',ai_next:'Sugerir siguiente cultivo',ai_title:'Sugerencia IA para la próxima temporada',
+ ai_reason:'Este bancal ha tenido {h} en las últimas temporadas. Cambiar a {f} rompe el ciclo de enfermedades y encaja en la rotación.',
+ ai_basis:'Basado en el historial del bancal, tu tipo de suelo y las cosechas de 9 fincas con suelo similar.',
+ saved_h:'Cosecha registrada',saved_o:'Observación guardada',choose_bed:'Elige un bancal',
+ com_title:'Comunidad',com_sub:'Pregunta a otros agricultores regenerativos y a expertos: respuestas de gente con suelo y cultivos parecidos.',
+ ask:'Haz una pregunta',ask_ph:'Ej.: ¿Cómo evitáis la mosca de la col sin malla?',topic:'Tema',post:'Enviar pregunta',
+ waiting:'Enviada a 6 agricultores con suelo similar. Te avisaremos cuando alguien responda.',answers:'respuestas',you:'Tú',
+ mentors:'Mentores',events:'Eventos',contact:'Contactar',sent:'Mensaje enviado (demo)',signup:'Inscribirse',signed:'Inscrito',
+ m_title:'Ventas',m_sub:'Pedidos, tienda online y entrega conjunta a clientes más grandes.',
+ week_rev:'Facturación esta semana',open_orders:'Pedidos abiertos',csa:'Socios de la CSA',
+ incoming:'Pedidos recibidos',accept:'Aceptar',accepted:'Aceptado',due:'Entrega',
+ products:'Productos',product:'Producto',price:'Precio',stock:'Existencias',webshop:'En la tienda online',
+ pool_title:'Entrega conjunta',pool_sub:'Cuatro fincas juntan volumen para un comedor público que no puede comprar a una sola finca pequeña.',
+ pool_need:'Demanda',pool_week:'kg de raíces por semana',pool_mine:'Mi aportación (kg/semana)',pool_missing:'faltan',pool_full:'Demanda cubierta',update:'Actualizar',
+ n_title:'Indicadores',n_sub:'Tu finca comparada con fincas regenerativas similares.',
+ share:'Compartir mis datos de forma anónima',share_txt:'Ves los datos de los demás cuando compartes los tuyos. Solo se comparten de forma anónima y puedes retirarlos en cualquier momento.',
+ locked:'Activa la opción de compartir para ver cómo estás frente a 23 fincas similares.',
+ me:'Mi finca',peers:'Mediana',peers_note:'Comparado con 23 fincas de 1–5 ha con hortalizas (datos de ejemplo).',
+ j_title:'Búsqueda de tierras',j_sub:'Tierras disponibles que encajan con tus capacidades, ambiciones y ubicación.',
+ match:'afinidad',why:'Por qué',interest:'Mostrar interés',interested:'Interés enviado',layout:'Ver plan llave en mano',hide:'Ocultar plan',
+ layout_t:'Propuesta de arranque (borrador IA)',from:'de',
+ nav_marked:'Mercado',tab_marked:'Mercado',
+ mk_title:'Mercado',mk_sub:'Los restaurantes publican lo que buscan. Varias fincas pequeñas se unen para la entrega y transportistas locales con furgonetas eléctricas pujan por el transporte.',
+ r_rest:'Restaurante',r_farm:'Agricultor',r_carrier:'Transportista',
+ r_rest_who:'Estás viendo el mercado como Restaurant Lyng.',r_farm_who:'Estás viendo el mercado como Kildegården.',r_carrier_who:'Estás viendo el mercado como Andersens Elfragt (2 furgonetas eléctricas).',
+ supply:'Oferta disponible',all:'Todo',per_kg:'/kg',km:'km',avail:'kg disponibles',fav:'Favorita',
+ new_wish:'Publicar una petición',w_prod:'Producto',w_kg:'Cantidad (kg)',w_date:'Entrega',w_max:'Precio máx. (DKK/kg)',w_note:'Calidad y preferencias',w_note_ph:'Ej.: tubérculos pequeños y firmes, a ser posible lavados',post_wish:'Enviar petición',
+ wishes:'Mis peticiones',farm_wishes:'Peticiones de restaurantes',st_open:'Agrupando entrega',st_acc:'Aceptada · esperando transporte',st_book:'Transporte reservado',
+ alloc_t:'Entrega conjunta propuesta',covered:'cubierto',missing_kg:'kg pendientes',full_cov:'Totalmente cubierta',accept_bundle:'Aceptar entrega conjunta',
+ prio_note:'Tus fincas favoritas tienen prioridad; después, las más cercanas.',favs:'Fincas favoritas',favs_sub:'El orden decide quién recibe el pedido primero.',add_fav:'Añadir a favoritas',remove_fav:'Quitar de favoritas',up:'Subir',down:'Bajar',
+ bids:'Ofertas de transporte',choose:'Elegir',chosen:'Elegida',no_bids:'Esperando ofertas de transportistas …',
+ your_part:'Tu parte',bid_in:'Participar',kg_offer:'Kg que puedes entregar',you_in:'Formas parte de la entrega',co:'Entregas junto con',not_have:'Aún no tienes este producto en existencias: ofrece lo que puedas cosechar.',
+ jobs:'Trabajos de transporte disponibles',job_kg:'kg en total',stops:'Ruta',deadline:'Antes del',your_bid:'Tu oferta',price_kr:'Precio (DKK)',window:'Franja horaria',send_bid:'Enviar oferta',bid_sent:'Oferta enviada',won:'Has conseguido el trabajo',lost:'Otro transportista consiguió el trabajo',
+ ev:'Furgoneta eléctrica',cargo:'Bici de carga + remolque',zero:'0 g CO₂ de escape',wish_sent:'Petición enviada a fincas cercanas',accepted_b:'Entrega aceptada: los transportistas ya pueden pujar',booked:'Transporte reservado',no_jobs:'No hay trabajos disponibles ahora mismo.'
+};
+
+const FAM={brassica:{da:'Korsblomstfamilien',en:'Brassicas'},allium:{da:'Løgfamilien',en:'Alliums'},legume:{da:'Bælgplanter',en:'Legumes'},root:{da:'Rodfrugter',en:'Root crops'},leaf:{da:'Bladgrønt',en:'Leafy greens'},nightshade:{da:'Natskygge',en:'Nightshades'},cover:{da:'Grøngødning',en:'Green manure'}};
+const CROPS={
+ kale:{da:'Grønkål',en:'Kale',f:'brassica'},cabbage:{da:'Spidskål',en:'Pointed cabbage',f:'brassica'},leek:{da:'Porrer',en:'Leeks',f:'allium'},garlic:{da:'Hvidløg',en:'Garlic',f:'allium'},onion:{da:'Løg',en:'Onions',f:'allium'},
+ bean:{da:'Bønner',en:'Beans',f:'legume'},pea:{da:'Ærter',en:'Peas',f:'legume'},carrot:{da:'Gulerødder',en:'Carrots',f:'root'},beet:{da:'Rødbeder',en:'Beetroot',f:'root'},parsnip:{da:'Pastinak',en:'Parsnip',f:'root'},
+ spinach:{da:'Spinat',en:'Spinach',f:'leaf'},salad:{da:'Vintersalat',en:'Winter salad',f:'leaf'},chard:{da:'Bladbede',en:'Chard',f:'leaf'},tomato:{da:'Tomater',en:'Tomatoes',f:'nightshade'},potato:{da:'Kartofler',en:'Potatoes',f:'nightshade'},
+ clover:{da:'Kløver og rug',en:'Clover and rye',f:'cover'}
+};
+const ROT=['legume','brassica','root','allium','leaf'];
+const FAMCROP={legume:'pea',brassica:'kale',root:'carrot',allium:'onion',leaf:'salad'};
+
+const S={
+ lang:'da',
+ tasks:[
+  {id:1,da:'Plant hvidløg i bed C2',en:'Plant garlic in bed C2',done:true},
+  {id:2,da:'Høst grønkål i bed A1 til restaurant',en:'Harvest kale in bed A1 for restaurant',done:false},
+  {id:3,da:'Pak 28 CSA-kasser',en:'Pack 28 CSA boxes',done:false},
+  {id:4,da:'Så kløver og rug i bed B4',en:'Sow clover and rye in bed B4',done:false}
+ ],
+ alert:'open',
+ beds:[
+  {id:'A1',z:'field',c:'kale',sown:'2026-06-20',exp:'2026-11-30',plan:180,h:142,hist:['potato','bean','beet'],obs:[]},
+  {id:'A2',z:'field',c:'leek',sown:'2026-05-15',exp:'2026-12-15',plan:220,h:120,hist:['bean','beet','cabbage'],obs:[]},
+  {id:'A3',z:'field',c:'carrot',sown:'2026-05-02',exp:'2026-11-10',plan:300,h:286,hist:['kale','pea','onion'],obs:[]},
+  {id:'A4',z:'field',c:'parsnip',sown:'2026-04-20',exp:'2026-12-20',plan:160,h:64,hist:['cabbage','bean','leek'],obs:[]},
+  {id:'B1',z:'field',c:'beet',sown:'2026-05-10',exp:'2026-10-25',plan:240,h:251,hist:['kale','pea','garlic'],obs:[]},
+  {id:'B2',z:'field',c:'cabbage',sown:'2026-06-01',exp:'2026-10-15',plan:200,h:176,hist:['bean','potato','onion'],obs:[]},
+  {id:'B3',z:'field',c:'spinach',sown:'2026-08-25',exp:'2026-11-20',plan:90,h:38,hist:['garlic','carrot','kale'],obs:[]},
+  {id:'B4',z:'field',c:'clover',sown:'2026-11-07',exp:'2027-04-15',plan:0,h:0,hist:['potato','leek','beet'],obs:[]},
+  {id:'C1',z:'field',c:'onion',sown:'2026-04-10',exp:'2026-08-30',plan:260,h:232,hist:['beet','kale','bean'],obs:[]},
+  {id:'C2',z:'field',c:'garlic',sown:'2026-11-04',exp:'2027-07-15',plan:0,h:0,hist:['carrot','cabbage','pea'],obs:[]},
+  {id:'C3',z:'field',c:'chard',sown:'2026-05-20',exp:'2026-11-30',plan:140,h:118,hist:['onion','beet','kale'],obs:[]},
+  {id:'C4',z:'field',c:'pea',sown:'2026-04-05',exp:'2026-07-10',plan:110,h:96,hist:['leek','potato','cabbage'],obs:[]},
+  {id:'T1',z:'tunnel',c:'tomato',sown:'2026-04-15',exp:'2026-10-20',plan:420,h:388,hist:['salad','bean','chard'],obs:[]},
+  {id:'T2',z:'tunnel',c:'salad',sown:'2026-09-15',exp:'2026-12-20',plan:120,h:34,hist:['tomato','spinach','tomato'],obs:[]}
+ ],
+ sel:'A1',suggest:null,
+ orders:[
+  {id:1,who:'Restaurant Lyng',da:'12 kg grønkål, 8 kg rødbeder',en:'12 kg kale, 8 kg beetroot',due:{da:'fre. 13/11',en:'Fri 13/11'},st:'open',kr:1240},
+  {id:2,who:'Webshop · 7 ordrer',da:'Grøntsagskasser, æg',en:'Veg boxes, eggs',due:{da:'lør. 14/11',en:'Sat 14/11'},st:'open',kr:2310},
+  {id:3,who:'Byens Madhus',da:'20 kg porrer',en:'20 kg leeks',due:{da:'tir. 17/11',en:'Tue 17/11'},st:'accepted',kr:900}
+ ],
+ products:[
+  {id:'p1',da:'Grønkål',en:'Kale',unit:'kg',price:55,stock:38,web:true},
+  {id:'p2',da:'Porrer',en:'Leeks',unit:'kg',price:45,stock:62,web:true},
+  {id:'p3',da:'Rødbeder',en:'Beetroot',unit:'kg',price:28,stock:120,web:true},
+  {id:'p4',da:'Grøntsagskasse, stor',en:'Veg box, large',unit:'stk',price:260,stock:30,web:true},
+  {id:'p5',da:'Æg, 10 stk.',en:'Eggs, 10',unit:'stk',price:48,stock:14,web:false}
+ ],
+ pool:{need:150,farms:[{n:'Kildegården',kg:30,me:true},{n:'Engly',kg:40},{n:'Søbakken',kg:25},{n:'Bøgely Have',kg:20}]},
+ threads:[
+  {id:1,q:{da:'Hvordan holder I kålfluen ude uden net?',en:'How do you keep cabbage root fly out without netting?'},who:'Jonas',meta:{da:'1,5 ha · sæson 2 · Fyn',en:'1.5 ha · season 2 · Funen'},tag:'brassica',open:true,
+   a:[{who:'Signe',meta:{da:'erfaren, 12 sæsoner',en:'experienced, 12 seasons'},t:{da:'Vi planter sent (efter første generation) og blander dild ind mellem rækkerne. Halverede angrebene for os.',en:'We plant late (after the first generation) and mix dill between rows. Halved the attacks for us.'}},
+      {who:'AI',meta:{da:'opsummering af 14 tråde',en:'summary of 14 threads'},t:{da:'Mest nævnte metoder: sen udplantning, krave om stænglen og blandingskultur. Virker bedst kombineret.',en:'Most mentioned methods: late planting, collars around stems and intercropping. Work best combined.'}}]},
+  {id:2,q:{da:'Hvilken grøngødning før hvidløg på lerjord?',en:'Which green manure before garlic on clay soil?'},who:'Amira',meta:{da:'4 ha · sæson 3 · Østjylland',en:'4 ha · season 3 · East Jutland'},tag:'allium',open:false,
+   a:[{who:'Peter',meta:{da:'rådgiver',en:'adviser'},t:{da:'Honningurt eller havre, der vinterdræbes. Undgå kløver lige før – for meget kvælstof.',en:'Phacelia or oats that winter-kill. Avoid clover right before – too much nitrogen.'}}]},
+  {id:3,q:{da:'Er der nogen, der deler en mosteripresse på Midtsjælland?',en:'Anyone sharing a cider press in Central Zealand?'},who:'Lærke',meta:{da:'7 ha · sæson 6',en:'7 ha · season 6'},tag:'gear',open:false,
+   a:[{who:'Ole',meta:{da:'18 ha · Samsø',en:'18 ha · Samsø'},t:{da:'Ikke på Sjælland, men vi låner gerne ud mod at I henter. Skriv privat.',en:'Not on Zealand, but we lend ours if you collect. Message me.'}}]}
+ ],
+ tags:{brassica:{da:'Kål',en:'Brassicas'},allium:{da:'Løg',en:'Alliums'},gear:{da:'Udstyr',en:'Equipment'},soil:{da:'Jord',en:'Soil'},sales:{da:'Salg',en:'Sales'}},
+ mentors:[{n:'Signe Holm',i:'SH',meta:{da:'12 sæsoner · grøntsager og CSA',en:'12 seasons · vegetables and CSA'},done:false},{n:'Ole Bak',i:'OB',meta:{da:'Skovlandbrug · æg · turisme',en:'Agroforestry · eggs · tourism'},done:false},{n:'Henrik Juul',i:'HJ',meta:{da:'Økonomi for små gårde',en:'Finances for small farms'},done:false}],
+ events:[{id:'e1',d:{da:'Lør. 21/11',en:'Sat 21/11'},t:{da:'Markvandring: vinterdyrkning i tunnel',en:'Farm walk: winter growing in tunnels'},p:{da:'Søbakken, 18 km',en:'Søbakken, 18 km'},on:false},{id:'e2',d:{da:'Tor. 3/12',en:'Thu 3/12'},t:{da:'Online: Sæsonplan 2027 med AI',en:'Online: 2027 season plan with AI'},p:{da:'Online',en:'Online'},on:false}],
+ share:false,
+ bench:[
+  {k:{da:'Omsætning pr. ha',en:'Revenue per ha'},me:182000,peer:146000,unit:'kr',max:250000},
+  {k:{da:'Timer pr. uge på salg',en:'Hours per week on sales'},me:14,peer:10,unit:'h',max:20,lowerBetter:true},
+  {k:{da:'Timer pr. uge på kontor',en:'Hours per week on admin'},me:6,peer:7,unit:'h',max:20,lowerBetter:true},
+  {k:{da:'Andel direkte salg',en:'Share of direct sales'},me:72,peer:64,unit:'%',max:100},
+  {k:{da:'Høst vs. plan',en:'Harvest vs. plan'},me:0,peer:81,unit:'%',max:100,live:true}
+ ],
+ parcels:[
+  {id:'L1',ha:4.5,area:{da:'Midtsjælland, 11 km fra dig',en:'Central Zealand, 11 km from you'},m:92,terms:{da:'Forpagtning 10 år, mulighed for gradvist ejerskab',en:'10-year lease, option of gradual ownership'},
+   why:{da:['Sandblandet lerjord, egnet til grøntsager','Vandboring og gammel lade','Ejeren ønsker generationsskifte'],en:['Sandy clay loam, suited to vegetables','Borehole and old barn','Owner seeks succession']},on:false,show:false},
+  {id:'L2',ha:2,area:{da:'Sydfyn, 140 km',en:'South Funen, 140 km'},m:74,terms:{da:'Delebrug med eksisterende frugtavler',en:'Shared use with existing fruit grower'},
+   why:{da:['Læ fra levende hegn','Eksisterende gårdbutik','Langt fra din nuværende kundekreds'],en:['Shelter from hedgerows','Existing farm shop','Far from your current customers']},on:false,show:false},
+  {id:'L3',ha:12,area:{da:'Østjylland, 210 km',en:'East Jutland, 210 km'},m:61,terms:{da:'Købsoption via jordfond',en:'Purchase option via land trust'},
+   why:{da:['Plads til afgræsning og skovlandbrug','Kræver investering i vanding','Større end dine nuværende ambitioner'],en:['Room for grazing and agroforestry','Requires irrigation investment','Larger than your current ambitions']},on:false,show:false}
+ ]
+};
+try{const l=localStorage.getItem('ff-lang');if(l==='da'||l==='en'||l==='es')S.lang=l}catch(e){}
+
+const t=k=>(I18N[S.lang][k]??k);
+const L=o=>{if(o==null)return '';if(typeof o==='string')return o;if(o[S.lang]!=null)return o[S.lang];if(S.lang==='es'&&o.en!=null)return Array.isArray(o.en)?o.en.map(x=>ES[x]??x):(ES[o.en]??o.en);return o.da};
+const tr=(da,en,es)=>S.lang==='da'?da:S.lang==='es'?es:en;
+const LOC=()=>tr('da-DK','en-GB','es-ES');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=(n,d=0)=>new Intl.NumberFormat(LOC(),{maximumFractionDigits:d}).format(n);
+const kr=n=>tr(nf(n)+' kr.','DKK '+nf(n),nf(n)+' DKK');
+const dt=s=>new Date(s+'T12:00:00').toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
+const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[k]+'</svg>';
+const famVar=f=>'--fam:var(--f-'+f+')';
+const route=()=>{const h=(location.hash||'').slice(1);return ROUTES.includes(h)?h:'overblik'};
+function harvestPct(){let p=0,h=0;S.beds.forEach(b=>{if(b.plan>0){p+=b.plan;h+=Math.min(b.h,b.plan*1.2)}});return p?Math.round(h/p*100):0}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
+
+function chrome(){
+ const r=route();
+ document.documentElement.lang=S.lang;
+ document.getElementById('nav').innerHTML=ROUTES.map(k=>'<a href="#'+k+'"'+(k===r?' aria-current="page"':'')+'>'+icon(k)+'<span>'+t('nav_'+k)+'</span></a>').join('');
+ document.getElementById('tabbar').innerHTML=ROUTES.map(k=>'<a href="#'+k+'"'+(k===r?' aria-current="page"':'')+'>'+icon(k)+'<span>'+t('tab_'+k)+'</span></a>').join('');
+ document.getElementById('farmMeta').textContent=t('farmMeta');
+ document.getElementById('banner').textContent=t('banner');
+ document.getElementById('railNote').textContent=t('railNote');
+ document.getElementById('lang-da').setAttribute('aria-pressed',S.lang==='da');
+ document.getElementById('lang-en').setAttribute('aria-pressed',S.lang==='en');
+ document.getElementById('lang-es').setAttribute('aria-pressed',S.lang==='es');
+}
+
+/* ---------- Views ---------- */
+function vOverblik(){
+ const hp=harvestPct();
+ const open=S.orders.filter(o=>o.st==='open');
+ const tasks=S.tasks.map(x=>'<label class="task'+(x.done?' done':'')+'"><input type="checkbox" id="task-'+x.id+'" data-act="task" data-id="'+x.id+'"'+(x.done?' checked':'')+'><span>'+esc(L(x))+'</span></label>').join('');
+ let alert='';
+ if(S.alert==='open') alert='<section class="card alert"><p class="eyebrow">'+t('alert_t')+'</p><p style="font-size:16px;font-weight:500">'+t('alert_body')+'</p><div class="btns"><button class="btn primary" data-act="alert-add">'+t('alert_add')+'</button><button class="btn" data-act="alert-dismiss">'+t('alert_dismiss')+'</button></div></section>';
+ else if(S.alert==='added') alert='<section class="card"><p class="eyebrow">'+t('alert_t')+'</p><p><span class="pill ok">'+t('alert_added')+'</span></p><p class="small muted">'+t('alert_body')+'</p></section>';
+ else alert='<section class="card"><p class="eyebrow">'+t('alert_t')+'</p><p class="small muted">'+t('alert_dismissed')+'</p></section>';
+ const th=S.threads.slice(0,2).map(x=>'<div><p style="font-weight:600">'+esc(L(x.q))+'</p><p class="small muted">'+esc(x.who)+' · '+x.a.length+' '+t('answers')+'</p></div>').join('');
+ return '<div><p class="eyebrow">'+t('date')+'</p><h1 class="h1">'+t('hello')+'</h1></div>'+
+ '<div class="grid g3">'+
+  '<section class="card"><div class="head"><h2>'+t('today')+'</h2><span class="small muted num">'+S.tasks.filter(x=>x.done).length+'/'+S.tasks.length+'</span></div><div class="list">'+tasks+'</div></section>'+
+  alert+
+  '<section class="card"><div class="head"><h2>'+t('harvest')+'</h2><a href="#plan">'+t('open_plan')+'</a></div><p class="big">'+hp+' %</p><div class="bar"><i style="width:'+Math.min(hp,100)+'%"></i></div><p class="small muted">'+t('harvest_sub')+'</p></section>'+
+  '<section class="card"><div class="head"><h2>'+t('orders')+'</h2><a href="#afsaetning">'+t('see_all')+'</a></div><p><span class="big">'+open.length+'</span> <span class="muted">'+t('orders_open')+'</span></p><div class="list">'+open.slice(0,2).map(o=>'<div class="row"><span><b style="font-weight:600">'+esc(o.who)+'</b><br><span class="small muted">'+esc(L(o))+'</span></span><span class="small muted num">'+esc(L(o.due))+'</span></div>').join('')+'</div></section>'+
+  '<section class="card"><h2>'+t('budget')+'</h2><p class="big">'+kr(412000)+'</p><div class="bar accent"><i style="width:92%"></i></div><p class="small muted">'+t('budget_sub')+': '+kr(412000)+' / '+kr(450000)+'</p><p><span class="pill accent">'+t('grant')+'</span></p></section>'+
+  '<section class="card"><div class="head"><h2>'+t('community')+'</h2><a href="#faellesskab">'+t('see_all')+'</a></div><div class="list">'+th+'</div></section>'+
+ '</div>';
+}
+
+function bedTile(b){
+ const c=CROPS[b.c],pct=b.plan?Math.min(100,Math.round(b.h/b.plan*100)):0;
+ return '<button class="bed" style="'+famVar(c.f)+'" data-act="bed" data-id="'+b.id+'" aria-pressed="'+(S.sel===b.id)+'"><span class="id">'+b.id+'</span><span class="crop">'+L(c)+'</span>'+
+  (b.plan?'<span class="bar"><i style="width:'+pct+'%"></i></span><span class="small muted num">'+nf(b.h)+' / '+nf(b.plan)+' kg</span>':'<span class="small muted">'+t('expected')+': '+dt(b.exp)+'</span>')+'</button>';
+}
+function bedPanel(){
+ const b=S.beds.find(x=>x.id===S.sel);
+ if(!b) return '<section class="card"><p class="muted">'+t('choose_bed')+'</p></section>';
+ const c=CROPS[b.c];
+ const hist=b.hist.map(h=>'<span class="chip" style="'+famVar(CROPS[h].f)+'">'+L(CROPS[h])+'</span>').join('');
+ let sug='';
+ if(S.suggest&&S.suggest.bed===b.id){
+  const nc=CROPS[S.suggest.crop];
+  const histFam=[...new Set(b.hist.slice(0,2).map(h=>L(FAM[CROPS[h].f]).toLowerCase()))].join(tr(' og ',' and ',' y '));
+  sug='<div class="suggest"><p class="eyebrow">'+t('ai_title')+'</p><p style="font-size:18px;font-weight:600"><span class="dot" style="display:inline-block;'+famVar(nc.f)+'"></span> '+L(nc)+'</p><p class="small">'+t('ai_reason').replace('{h}',esc(histFam)).replace('{f}',esc(L(FAM[nc.f]).toLowerCase()))+'</p><p class="small muted">'+t('ai_basis')+'</p></div>';
+ }
+ const obs=b.obs.map(o=>'<p class="small">“'+esc(o)+'”</p>').join('');
+ return '<section class="card" aria-live="polite"><div class="row"><div><p class="eyebrow">'+t('bed')+' '+b.id+' · '+(b.z==='field'?t('field'):t('tunnel'))+'</p><h2 style="font-family:var(--display);font-size:26px;font-weight:600">'+L(c)+'</h2></div><span class="pill" style="'+famVar(c.f)+';background:color-mix(in srgb,var(--fam) 18%,transparent)">'+L(FAM[c.f])+'</span></div>'+
+ '<dl class="kv"><dt>'+t('sown')+'</dt><dd>'+dt(b.sown)+'</dd><dt>'+t('expected')+'</dt><dd>'+dt(b.exp)+'</dd>'+(b.plan?'<dt>'+t('harvested')+'</dt><dd class="num">'+nf(b.h)+' kg / '+nf(b.plan)+' kg '+t('planned').toLowerCase()+'</dd>':'')+'</dl>'+
+ '<div class="stack"><p class="small" style="font-weight:600">'+t('history')+'</p><div class="chips">'+hist+'</div></div>'+
+ '<form class="inline" data-form="harvest"><div class="field"><label for="hv-kg">'+t('reg_harvest')+' ('+t('kg')+')</label><input class="input num" id="hv-kg" type="number" min="0" step="0.5" inputmode="decimal" value="5"></div><button class="btn primary" type="submit">'+t('save')+'</button></form>'+
+ '<form class="stack" data-form="obs"><div class="field"><label for="obs-text">'+t('obs')+'</label><textarea class="input" id="obs-text" placeholder="'+t('obs_ph')+'"></textarea></div><div class="row"><span class="small muted">'+t('obs_note')+'</span><button class="btn" type="submit">'+t('save')+'</button></div>'+obs+'</form>'+
+ '<button class="btn" data-act="suggest" style="align-self:flex-start;border-color:var(--accent)">'+t('ai_next')+'</button>'+sug+
+ '</section>';
+}
+function vPlan(){
+ const used=[...new Set(S.beds.map(b=>CROPS[b.c].f))];
+ const legend=used.map(f=>'<span><i class="dot" style="'+famVar(f)+'"></i>'+L(FAM[f])+'</span>').join('');
+ return '<div><p class="eyebrow">'+t('nav_plan')+' 2026</p><h1 class="h1">'+t('plan_title')+'</h1><p class="sub">'+t('plan_sub')+'</p></div>'+
+ '<div class="split"><section class="card"><div class="legend">'+legend+'</div>'+
+  '<div class="zone"><h3>'+t('field')+'</h3><div class="beds">'+S.beds.filter(b=>b.z==='field').map(bedTile).join('')+'</div></div>'+
+  '<div class="zone"><h3>'+t('tunnel')+'</h3><div class="beds tunnel">'+S.beds.filter(b=>b.z==='tunnel').map(bedTile).join('')+'</div></div>'+
+ '</section>'+bedPanel()+'</div>';
+}
+
+function vCom(){
+ const threads=S.threads.map(x=>'<div><button class="thread" data-act="thread" data-id="'+x.id+'" aria-expanded="'+x.open+'"><h3>'+esc(L(x.q))+'</h3><span class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px"><span class="pill">'+L(S.tags[x.tag])+'</span><span class="small muted">'+esc(x.who)+' · '+esc(L(x.meta))+' · '+x.a.length+' '+t('answers')+'</span></span></button>'+
+  (x.open?'<div class="answers">'+(x.a.length?x.a.map(a=>'<div><p class="small"><b>'+esc(a.who)+'</b> <span class="muted">· '+esc(L(a.meta))+'</span></p><p>'+esc(L(a.t))+'</p></div>').join(''):'<p class="small muted">'+t('waiting')+'</p>')+'</div>':'')+'</div>').join('');
+ const tagOpts=Object.keys(S.tags).map(k=>'<option value="'+k+'">'+L(S.tags[k])+'</option>').join('');
+ const mentors=S.mentors.map((m,i)=>'<div class="row"><span class="person"><span class="avatar">'+m.i+'</span><span><b style="font-weight:600">'+m.n+'</b><br><span class="small muted">'+L(m.meta)+'</span></span></span><button class="btn" data-act="mentor" data-i="'+i+'"'+(m.done?' disabled':'')+'>'+(m.done?t('sent'):t('contact'))+'</button></div>').join('');
+ const events=S.events.map((e,i)=>'<div class="row"><span><span class="small muted">'+L(e.d)+' · '+L(e.p)+'</span><br><b style="font-weight:600">'+L(e.t)+'</b></span><button class="btn'+(e.on?'':' primary')+'" data-act="event" data-i="'+i+'">'+(e.on?t('signed'):t('signup'))+'</button></div>').join('');
+ return '<div><p class="eyebrow">'+t('nav_faellesskab')+'</p><h1 class="h1">'+t('com_title')+'</h1><p class="sub">'+t('com_sub')+'</p></div>'+
+ '<div class="split"><div class="stack" style="gap:16px">'+
+  '<form class="card" data-form="ask"><h2>'+t('ask')+'</h2><div class="field"><label for="ask-q" class="small">'+t('ask')+'</label><textarea class="input" id="ask-q" placeholder="'+t('ask_ph')+'" required></textarea></div><div class="inline"><div class="field"><label for="ask-tag">'+t('topic')+'</label><select class="input" id="ask-tag">'+tagOpts+'</select></div><button class="btn primary" type="submit">'+t('post')+'</button></div></form>'+
+  '<section class="card"><div class="list">'+threads+'</div></section></div>'+
+  '<div class="stack" style="gap:16px"><section class="card"><h2>'+t('mentors')+'</h2><div class="list">'+mentors+'</div></section><section class="card"><h2>'+t('events')+'</h2><div class="list">'+events+'</div></section></div>'+
+ '</div>';
+}
+
+function vMarket(){
+ const open=S.orders.filter(o=>o.st==='open').length;
+ const orders=S.orders.map(o=>'<div class="row" style="flex-wrap:wrap"><span style="min-width:0;flex:1"><b style="font-weight:600">'+esc(o.who)+'</b><br><span class="small muted">'+esc(L(o))+' · '+t('due')+' '+esc(L(o.due))+'</span></span><span class="num small" style="font-weight:600">'+kr(o.kr)+'</span>'+(o.st==='open'?'<button class="btn primary" data-act="accept" data-id="'+o.id+'">'+t('accept')+'</button>':'<span class="pill ok">'+t('accepted')+'</span>')+'</div>').join('');
+ const prods=S.products.map(p=>'<tr><td style="font-weight:500">'+L(p)+'</td><td class="num">'+kr(p.price)+' / '+p.unit+'</td><td class="num">'+nf(p.stock)+' '+p.unit+'</td><td><button class="switch" role="switch" aria-checked="'+p.web+'" aria-label="'+t('webshop')+': '+esc(L(p))+'" data-act="web" data-id="'+p.id+'"></button></td></tr>').join('');
+ const P=S.pool,tot=P.farms.reduce((s,f)=>s+f.kg,0),mine=P.farms.find(f=>f.me);
+ const max=Math.max(P.need,tot);
+ const rows=P.farms.map(f=>'<div class="pool-row'+(f.me?' me':'')+'"><span'+(f.me?' style="font-weight:600"':'')+'>'+esc(f.n)+'</span><span class="bar"><i style="width:'+(f.kg/max*100)+'%"></i></span><span class="num" style="text-align:right">'+nf(f.kg)+' kg</span></div>').join('');
+ const status=tot>=P.need?'<span class="pill ok">'+t('pool_full')+'</span>':'<span class="pill warn">'+nf(P.need-tot)+' kg '+t('pool_missing')+'</span>';
+ return '<div><p class="eyebrow">'+t('nav_afsaetning')+'</p><h1 class="h1">'+t('m_title')+'</h1><p class="sub">'+t('m_sub')+'</p></div>'+
+ '<div class="grid g3"><section class="card"><p class="small muted">'+t('week_rev')+'</p><p class="big">'+kr(8740)+'</p></section><section class="card"><p class="small muted">'+t('open_orders')+'</p><p class="big">'+open+'</p></section><section class="card"><p class="small muted">'+t('csa')+'</p><p class="big">28</p></section></div>'+
+ '<div class="split"><div class="stack" style="gap:16px"><section class="card"><h2>'+t('incoming')+'</h2><div class="list">'+orders+'</div></section>'+
+  '<section class="card"><h2>'+t('products')+'</h2><div class="tablewrap"><table><thead><tr><th>'+t('product')+'</th><th>'+t('price')+'</th><th>'+t('stock')+'</th><th>'+t('webshop')+'</th></tr></thead><tbody>'+prods+'</tbody></table></div></section></div>'+
+  '<section class="card"><p class="eyebrow">'+t('pool_title')+'</p><h2 style="font-family:var(--display);font-size:22px;font-weight:600">'+tr('Kommunekøkken (eksempel)','Municipal kitchen (example)','Comedor municipal (ejemplo)')+'</h2><p class="small muted">'+t('pool_sub')+'</p>'+
+   '<p><span class="big">'+nf(tot)+'</span> <span class="muted">/ '+nf(P.need)+' '+t('pool_week')+'</span></p>'+status+'<div class="stack">'+rows+'</div>'+
+   '<form class="inline" data-form="pool"><div class="field"><label for="pool-kg">'+t('pool_mine')+'</label><input class="input num" id="pool-kg" type="number" min="0" max="200" step="5" value="'+mine.kg+'"></div><button class="btn primary" type="submit">'+t('update')+'</button></form></section>'+
+ '</div>';
+}
+
+function vNum(){
+ const hp=harvestPct();
+ const rows=S.bench.map(b=>{
+  const me=b.live?hp:b.me;
+  const fmt=v=>b.unit==='kr'?kr(v):nf(v)+(b.unit==='%'?' %':' '+tr('t','h','h'));
+  const better=b.lowerBetter?me<=b.peer:me>=b.peer;
+  return '<div class="bench"><div class="row"><span style="font-weight:600">'+L(b.k)+'</span>'+(S.share?'<span class="pill '+(better?'ok':'warn')+'">'+(better?tr('Bedre end median','Better than median','Mejor que la mediana'):tr('Under median','Below median','Por debajo de la mediana'))+'</span>':'')+'</div>'+
+  '<div class="bars"><span class="small">'+t('me')+'</span><span class="bar"><i style="width:'+(me/b.max*100)+'%"></i></span><span class="num small" style="text-align:right">'+fmt(me)+'</span>'+
+  (S.share?'<span class="small muted peer">'+t('peers')+'</span><span class="bar peer"><i style="width:'+(b.peer/b.max*100)+'%"></i></span><span class="num small muted" style="text-align:right">'+fmt(b.peer)+'</span>':'')+'</div></div>';
+ }).join('');
+ return '<div><p class="eyebrow">'+t('nav_noegletal')+'</p><h1 class="h1">'+t('n_title')+'</h1><p class="sub">'+t('n_sub')+'</p></div>'+
+ '<div class="split"><section class="card" style="gap:18px">'+rows+(S.share?'<p class="small muted">'+t('peers_note')+'</p>':'<p class="locked">'+t('locked')+'</p>')+'</section>'+
+ '<section class="card"><div class="row"><h2>'+t('share')+'</h2><button class="switch" role="switch" id="share-switch" aria-checked="'+S.share+'" aria-label="'+t('share')+'" data-act="share"></button></div><p class="small muted">'+t('share_txt')+'</p></section></div>';
+}
+
+function vLand(){
+ const cards=S.parcels.map((p,i)=>{
+  const plan=p.show?'<div class="suggest"><p class="eyebrow">'+t('layout_t')+'</p><ul class="small" style="margin:0;padding-left:18px">'+tr(
+   ['1,5 ha grøntsager i 24 permanente bede','2 tunneller á 8 × 30 m til vinterdyrkning','1 ha frugt og bær med læhegn','Resten: grøngødning og afgræsning de første 2 år','Første års budget: [udfyldes efter jordanalyse]'],
+   ['1.5 ha vegetables in 24 permanent beds','2 tunnels of 8 × 30 m for winter growing','1 ha fruit and berries with shelterbelts','Rest: green manure and grazing for the first 2 years','First-year budget: [to be filled after soil analysis]'],
+   ['1,5 ha de hortalizas en 24 bancales permanentes','2 túneles de 8 × 30 m para cultivo de invierno','1 ha de frutales y bayas con setos cortavientos','Resto: abono verde y pastoreo los 2 primeros años','Presupuesto del primer año: [a completar tras el análisis de suelo]']).map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':'';
+  return '<section class="card parcel"><div class="row"><div><p class="eyebrow">'+nf(p.ha,1)+' ha</p><h2 style="font-size:18px">'+L(p.area)+'</h2></div><div style="text-align:right"><p class="match num">'+p.m+' %</p><p class="small muted">'+t('match')+'</p></div></div>'+
+   '<p class="small">'+L(p.terms)+'</p><div class="stack"><p class="small" style="font-weight:600">'+t('why')+'</p><ul class="small" style="margin:0;padding-left:18px">'+L(p.why).map(w=>'<li>'+w+'</li>').join('')+'</ul></div>'+
+   '<div class="btns"><button class="btn'+(p.on?'':' primary')+'" data-act="interest" data-i="'+i+'">'+(p.on?t('interested'):t('interest'))+'</button><button class="btn ghost" data-act="layout" data-i="'+i+'" aria-expanded="'+p.show+'">'+(p.show?t('hide'):t('layout'))+'</button></div>'+plan+'</section>';
+ }).join('');
+ return '<div><p class="eyebrow">'+t('nav_jord')+'</p><h1 class="h1">'+t('j_title')+'</h1><p class="sub">'+t('j_sub')+'</p></div><div class="grid g3">'+cards+'</div>';
+}
+
+/* ---------- Marketplace: restaurants, farmers, carriers ---------- */
+Object.assign(I18N.da,{nav_marked:'Markedsplads',tab_marked:'Marked',
+ mk_title:'Markedsplads',mk_sub:'Restauranter lægger ønsker ind. Flere små gårde går sammen om leverancen – og lokale elfragtmænd byder på transporten.',
+ r_rest:'Restaurant',r_farm:'Landmand',r_carrier:'Fragtmand',
+ r_rest_who:'Du ser markedspladsen som Restaurant Lyng.',r_farm_who:'Du ser markedspladsen som Kildegården.',r_carrier_who:'Du ser markedspladsen som Andersens Elfragt (2 elvarebiler).',
+ supply:'Udbud lige nu',all:'Alle',per_kg:'/kg',km:'km',avail:'kg ledigt',fav:'Favorit',
+ new_wish:'Læg et ønske ind',w_prod:'Råvare',w_kg:'Mængde (kg)',w_date:'Levering',w_max:'Maks. pris (kr./kg)',w_note:'Kvalitet og ønsker',w_note_ph:'Fx: små, faste knolde – gerne vasket',post_wish:'Send ønske',
+ wishes:'Mine ønsker',farm_wishes:'Restauranters ønsker',st_open:'Samler leverance',st_acc:'Accepteret · venter på fragt',st_book:'Transport booket',
+ alloc_t:'Foreslået samlet leverance',covered:'dækket',missing_kg:'kg mangler endnu',full_cov:'Fuldt dækket',accept_bundle:'Acceptér samlet leverance',
+ prio_note:'Dine favoritgårde prioriteres først, derefter de nærmeste.',favs:'Favoritgårde',favs_sub:'Rækkefølgen bestemmer, hvem der får ordren først.',add_fav:'Tilføj som favorit',remove_fav:'Fjern favorit',up:'Flyt op',down:'Flyt ned',
+ bids:'Bud på transport',choose:'Vælg',chosen:'Valgt',no_bids:'Venter på bud fra fragtmænd …',
+ your_part:'Din andel',bid_in:'Byd ind',kg_offer:'Kg du kan levere',you_in:'Du er med i leverancen',co:'Leverer sammen med',not_have:'Du har ikke denne råvare på lager endnu – byd ind med det, du kan høste.',
+ jobs:'Ledige transportopgaver',job_kg:'kg i alt',stops:'Rute',deadline:'Senest',your_bid:'Dit bud',price_kr:'Pris (kr.)',window:'Tidsrum',send_bid:'Send bud',bid_sent:'Bud sendt',won:'Du har fået opgaven',lost:'En anden fragtmand fik opgaven',
+ ev:'Elvarebil',cargo:'Ladcykel + trailer',zero:'0 g CO₂ udstødning',wish_sent:'Ønske sendt til gårde i nærheden',accepted_b:'Leverance accepteret – fragtmænd kan nu byde',booked:'Transport booket',no_jobs:'Ingen ledige opgaver lige nu.'
+});
+Object.assign(I18N.en,{nav_marked:'Marketplace',tab_marked:'Market',
+ mk_title:'Marketplace',mk_sub:'Restaurants post requests. Several small farms team up on the delivery – and local electric carriers bid on transport.',
+ r_rest:'Restaurant',r_farm:'Farmer',r_carrier:'Carrier',
+ r_rest_who:'You are viewing the marketplace as Restaurant Lyng.',r_farm_who:'You are viewing the marketplace as Kildegården.',r_carrier_who:'You are viewing the marketplace as Andersens Elfragt (2 electric vans).',
+ supply:'Available now',all:'All',per_kg:'/kg',km:'km',avail:'kg available',fav:'Favourite',
+ new_wish:'Post a request',w_prod:'Produce',w_kg:'Quantity (kg)',w_date:'Delivery',w_max:'Max price (DKK/kg)',w_note:'Quality and wishes',w_note_ph:'E.g. small, firm tubers – washed if possible',post_wish:'Post request',
+ wishes:'My requests',farm_wishes:'Restaurant requests',st_open:'Pooling delivery',st_acc:'Accepted · awaiting transport',st_book:'Transport booked',
+ alloc_t:'Proposed pooled delivery',covered:'covered',missing_kg:'kg still missing',full_cov:'Fully covered',accept_bundle:'Accept pooled delivery',
+ prio_note:'Your favourite farms are prioritised first, then the nearest.',favs:'Favourite farms',favs_sub:'The order decides who gets the order first.',add_fav:'Add as favourite',remove_fav:'Remove favourite',up:'Move up',down:'Move down',
+ bids:'Transport bids',choose:'Choose',chosen:'Chosen',no_bids:'Waiting for bids from carriers …',
+ your_part:'Your share',bid_in:'Join',kg_offer:'Kg you can deliver',you_in:'You are part of the delivery',co:'Delivering together with',not_have:'You don’t have this produce in stock yet – offer what you can harvest.',
+ jobs:'Open transport jobs',job_kg:'kg in total',stops:'Route',deadline:'By',your_bid:'Your bid',price_kr:'Price (DKK)',window:'Time window',send_bid:'Send bid',bid_sent:'Bid sent',won:'You won the job',lost:'Another carrier won the job',
+ ev:'Electric van',cargo:'Cargo bike + trailer',zero:'0 g CO₂ exhaust',wish_sent:'Request sent to nearby farms',accepted_b:'Delivery accepted – carriers can now bid',booked:'Transport booked',no_jobs:'No open jobs right now.'
+});
+const PROD={jerusalem:{da:'Jordskokker',en:'Jerusalem artichokes'},kale:CROPS.kale,leek:CROPS.leek,beet:CROPS.beet,carrot:CROPS.carrot,squash:{da:'Græskar',en:'Squash'},parsnip:CROPS.parsnip};
+const FARMS={'Kildegården':{km:11,me:true},'Engly':{km:14},'Søbakken':{km:18},'Bøgely Have':{km:9},'Hyldegården':{km:26}};
+const DATES=[{da:'fre. 13/11',en:'Fri 13/11'},{da:'tir. 17/11',en:'Tue 17/11'},{da:'tor. 19/11',en:'Thu 19/11'},{da:'fre. 20/11',en:'Fri 20/11'}];
+const M={
+ role:'rest',filter:'all',
+ offers:[
+  {f:'Kildegården',p:'kale',kg:38,pr:55},{f:'Kildegården',p:'leek',kg:62,pr:45},{f:'Kildegården',p:'beet',kg:120,pr:28},
+  {f:'Engly',p:'jerusalem',kg:40,pr:42},{f:'Engly',p:'carrot',kg:150,pr:22},{f:'Engly',p:'kale',kg:25,pr:58},
+  {f:'Søbakken',p:'jerusalem',kg:25,pr:48},{f:'Søbakken',p:'squash',kg:80,pr:35},{f:'Søbakken',p:'leek',kg:30,pr:46},
+  {f:'Bøgely Have',p:'jerusalem',kg:15,pr:45},{f:'Bøgely Have',p:'beet',kg:60,pr:30},
+  {f:'Hyldegården',p:'kale',kg:50,pr:52},{f:'Hyldegården',p:'squash',kg:40,pr:32},{f:'Hyldegården',p:'carrot',kg:90,pr:24}
+ ],
+ favs:['Søbakken','Kildegården','Bøgely Have'],
+ wishes:[
+  {id:'w1',p:'jerusalem',kg:50,d:2,max:50,note:{da:'Små, faste knolde – gerne vasket',en:'Small, firm tubers – washed if possible'},st:'open',alloc:null,bids:[],pick:null,show:true},
+  {id:'w2',p:'kale',kg:40,d:0,max:60,note:{da:'Krøllet grønkål, ingen gule blade',en:'Curly kale, no yellow leaves'},st:'acc',
+   alloc:[{f:'Kildegården',kg:38,fav:2,pr:55},{f:'Engly',kg:2,fav:0,pr:58}],bids:[
+    {c:'Grøn Budtjeneste',v:'ev',pr:320,w:{da:'fre. 7–9',en:'Fri 7–9'}},
+    {c:'Midt Cargo-cykler',v:'cargo',pr:260,w:{da:'fre. 8–11',en:'Fri 8–11'}}],pick:null,show:true}
+ ]
+};
+
+function allocate(w){
+ const cands=M.offers.filter(o=>o.p===w.p&&o.pr<=w.max&&o.kg>0);
+ cands.sort((a,b)=>{const fa=M.favs.indexOf(a.f),fb=M.favs.indexOf(b.f);const ra=fa<0?99:fa,rb=fb<0?99:fb;return ra-rb||FARMS[a.f].km-FARMS[b.f].km});
+ let need=w.kg;const out=[];
+ for(const o of cands){if(need<=0)break;const take=Math.min(o.kg,need);out.push({f:o.f,kg:take,fav:M.favs.indexOf(o.f)+1,pr:o.pr});need-=take}
+ return out;
+}
+const allocOf=w=>w.st==='open'?allocate(w):w.alloc;
+const SEG=['var(--primary)','var(--accent)','var(--f-root)','var(--f-allium)','var(--f-cover)'];
+function allocHTML(w){
+ const a=allocOf(w),got=a.reduce((s,x)=>s+x.kg,0);
+ const bar='<div class="fill" aria-hidden="true">'+a.map((x,i)=>'<i style="width:'+(x.kg/w.kg*100)+'%;background:'+SEG[i%SEG.length]+'"></i>').join('')+'</div>';
+ const rows=a.map((x,i)=>'<span class="who"><i class="dot" style="background:'+SEG[i%SEG.length]+'"></i>'+(x.fav?'<span class="star" aria-hidden="true">★</span>':'')+'<span>'+esc(x.f)+'</span>'+(x.fav?'<span class="prio">'+t('fav')+' #'+x.fav+'</span>':'<span class="small muted">'+FARMS[x.f].km+' '+t('km')+'</span>')+'</span><span class="num">'+nf(x.kg)+' kg</span><span class="num small muted">'+(x.pr?kr(x.pr)+t('per_kg'):'')+'</span>').join('');
+ const st=got>=w.kg?'<span class="pill ok">'+t('full_cov')+'</span>':'<span class="pill warn">'+nf(w.kg-got)+' '+t('missing_kg')+'</span>';
+ return '<div class="stack"><div class="row"><span class="small" style="font-weight:600">'+t('alloc_t')+'</span>'+st+'</div>'+bar+'<div class="alloc">'+rows+'</div></div>';
+}
+function stPill(w){return w.st==='open'?'<span class="pill accent">'+t('st_open')+'</span>':w.st==='acc'?'<span class="pill warn">'+t('st_acc')+'</span>':'<span class="pill ok">'+t('st_book')+'</span>'}
+function wishHead(w){return '<div class="row" style="align-items:flex-start"><div><h3>'+nf(w.kg)+' kg '+L(PROD[w.p]).toLowerCase()+'</h3><p class="small muted">'+(M.role==='rest'?'':'Restaurant Lyng · ')+t('w_date')+' '+L(DATES[w.d])+tr(' · maks. ',' · max ',' · máx. ')+kr(w.max)+t('per_kg')+'</p><p class="small">“'+esc(L(w.note))+'”</p></div>'+stPill(w)+'</div>'}
+function bidsHTML(w,choose){
+ if(!w.bids.length) return '<p class="small muted">'+t('no_bids')+'</p>';
+ return '<div class="stack"><p class="small" style="font-weight:600">'+t('bids')+'</p>'+w.bids.map((b,i)=>'<div class="bid'+(w.pick===i?' chosen':'')+'"><span><b style="font-weight:600">'+esc(b.c)+'</b>'+(b.mine?' <span class="pill accent">'+t('your_bid')+'</span>':'')+'<br><span class="small muted">'+t(b.v)+' · '+L(b.w)+' · '+t('zero')+'</span></span><span class="row" style="gap:10px"><span class="num" style="font-weight:600">'+kr(b.pr)+'</span>'+(choose&&w.st==='acc'?'<button class="btn primary" data-mk="pick" data-w="'+w.id+'" data-i="'+i+'">'+t('choose')+'</button>':(w.pick===i?'<span class="pill ok">'+t('chosen')+'</span>':''))+'</span></div>').join('')+'</div>';
+}
+function offersHTML(){
+ const keys=[...new Set(M.offers.map(o=>o.p))];
+ const f='<div class="filters" role="group" aria-label="'+t('w_prod')+'"><button data-mk="filter" data-v="all" aria-pressed="'+(M.filter==='all')+'">'+t('all')+'</button>'+keys.map(k=>'<button data-mk="filter" data-v="'+k+'" aria-pressed="'+(M.filter===k)+'">'+L(PROD[k])+'</button>').join('')+'</div>';
+ const list=M.offers.filter(o=>o.kg>0&&(M.filter==='all'||o.p===M.filter)).sort((a,b)=>FARMS[a.f].km-FARMS[b.f].km).map(o=>{const fv=M.favs.indexOf(o.f)+1;return '<div class="offer"><span class="farmname">'+(fv&&M.role==='rest'?'<span class="star" aria-label="'+t('fav')+'">★</span>':'')+esc(o.f)+' · '+FARMS[o.f].km+' '+t('km')+'</span><b>'+L(PROD[o.p])+'</b><span class="row"><span class="small muted num">'+nf(o.kg)+' '+t('avail')+'</span><span class="num" style="font-weight:600">'+kr(o.pr)+t('per_kg')+'</span></span></div>'}).join('');
+ return '<section class="card"><h2>'+t('supply')+'</h2>'+f+'<div class="offers">'+list+'</div></section>';
+}
+function vRest(){
+ const prodOpts=Object.keys(PROD).map(k=>'<option value="'+k+'">'+L(PROD[k])+'</option>').join('');
+ const dateOpts=DATES.map((d,i)=>'<option value="'+i+'"'+(i===2?' selected':'')+'>'+L(d)+'</option>').join('');
+ const wishes=M.wishes.map(w=>'<div class="wish">'+wishHead(w)+allocHTML(w)+(w.st==='open'?'<p class="small muted">'+t('prio_note')+'</p><button class="btn primary" style="align-self:flex-start" data-mk="acceptb" data-w="'+w.id+'">'+t('accept_bundle')+'</button>':bidsHTML(w,true))+'</div>').join('');
+ const allFarms=Object.keys(FARMS);
+ const favs=M.favs.map((f,i)=>'<div class="fav"><span class="star" aria-hidden="true">★</span><span class="n"><b style="font-weight:600">'+esc(f)+'</b><br><span class="small muted">'+t('fav')+' #'+(i+1)+' · '+FARMS[f].km+' '+t('km')+'</span></span><button class="iconbtn" data-mk="up" data-i="'+i+'" aria-label="'+t('up')+': '+esc(f)+'"'+(i===0?' disabled':'')+'>↑</button><button class="iconbtn" data-mk="down" data-i="'+i+'" aria-label="'+t('down')+': '+esc(f)+'"'+(i===M.favs.length-1?' disabled':'')+'>↓</button><button class="iconbtn" data-mk="unfav" data-f="'+esc(f)+'" aria-label="'+t('remove_fav')+': '+esc(f)+'">×</button></div>').join('')+
+  allFarms.filter(f=>!M.favs.includes(f)).map(f=>'<div class="fav"><span class="star" aria-hidden="true" style="opacity:.3">☆</span><span class="n">'+esc(f)+'<br><span class="small muted">'+FARMS[f].km+' '+t('km')+'</span></span><button class="btn" data-mk="fav" data-f="'+esc(f)+'">'+t('add_fav')+'</button></div>').join('');
+ return '<div class="split"><div class="stack" style="gap:16px">'+
+  '<section class="card"><h2>'+t('wishes')+'</h2><div class="stack" style="gap:12px">'+wishes+'</div></section>'+offersHTML()+'</div>'+
+  '<div class="stack" style="gap:16px"><form class="card" data-mkform="wish"><h2>'+t('new_wish')+'</h2>'+
+   '<div class="field"><label for="wf-p">'+t('w_prod')+'</label><select class="input" id="wf-p">'+prodOpts+'</select></div>'+
+   '<div class="grid g2" style="gap:10px"><div class="field"><label for="wf-kg">'+t('w_kg')+'</label><input class="input num" id="wf-kg" type="number" min="1" value="30"></div><div class="field"><label for="wf-max">'+t('w_max')+'</label><input class="input num" id="wf-max" type="number" min="1" value="50"></div></div>'+
+   '<div class="field"><label for="wf-d">'+t('w_date')+'</label><select class="input" id="wf-d">'+dateOpts+'</select></div>'+
+   '<div class="field"><label for="wf-note">'+t('w_note')+'</label><input class="input" id="wf-note" placeholder="'+t('w_note_ph')+'"></div>'+
+   '<button class="btn primary" type="submit" style="align-self:flex-start">'+t('post_wish')+'</button></form>'+
+  '<section class="card"><h2>'+t('favs')+'</h2><p class="small muted">'+t('favs_sub')+'</p><div>'+favs+'</div></section></div></div>';
+}
+function vFarmer(){
+ const me='Kildegården';
+ const items=M.wishes.filter(w=>w.st==='open').map(w=>{
+  const a=allocOf(w),mine=a.find(x=>x.f===me),others=a.filter(x=>x.f!==me).map(x=>x.f);
+  const have=M.offers.find(o=>o.f===me&&o.p===w.p);
+  const fv=M.favs.indexOf(me)+1;
+  return '<div class="wish">'+wishHead(w)+(fv?'<p><span class="prio" style="font-size:12px;font-weight:700;color:var(--on-accent-soft);background:var(--accent-soft);border-radius:999px;padding:2px 9px">★ '+tr('Du er restaurantens favorit #','You are the restaurant’s favourite #','Eres la finca favorita del restaurante n.º ')+fv+'</span></p>':'')+allocHTML(w)+
+   (mine?'<p><span class="pill ok">'+t('you_in')+': '+nf(mine.kg)+' kg</span></p>':(!have?'<p class="small muted">'+t('not_have')+'</p>':''))+
+   (others.length?'<p class="small muted">'+t('co')+': '+others.map(esc).join(', ')+'</p>':'')+
+   '<form class="inline" data-mkform="join" data-w="'+w.id+'"><div class="field"><label for="jk-'+w.id+'">'+t('kg_offer')+'</label><input class="input num" id="jk-'+w.id+'" type="number" min="0" step="1" value="'+(have?have.kg:10)+'"></div><div class="field"><label for="jp-'+w.id+'">'+t('price')+' ('+tr('kr./kg','DKK/kg','DKK/kg')+')</label><input class="input num" id="jp-'+w.id+'" type="number" min="1" value="'+(have?have.pr:Math.min(w.max,46))+'"></div><button class="btn primary" type="submit">'+t('bid_in')+'</button></form></div>';
+ }).join('');
+ const mineOffers=M.offers.filter(o=>o.f===me);
+ return '<div class="split"><section class="card"><h2>'+t('farm_wishes')+'</h2><div class="stack" style="gap:12px">'+(items||'<p class="muted">—</p>')+'</div></section>'+
+  '<section class="card"><h2>'+tr('Mine opslag','My listings','Mis anuncios')+'</h2><div class="list">'+mineOffers.map(o=>'<div class="row"><span>'+L(PROD[o.p])+'<br><span class="small muted num">'+nf(o.kg)+' '+t('avail')+'</span></span><span class="num" style="font-weight:600">'+kr(o.pr)+t('per_kg')+'</span></div>').join('')+'</div></section></div>';
+}
+function vCarrier(){
+ const jobs=M.wishes.filter(w=>w.st!=='open').map(w=>{
+  const a=w.alloc.filter(x=>x.kg>0),kgs=a.reduce((s,x)=>s+x.kg,0),km=Math.max(...a.map(x=>FARMS[x.f].km))+8;
+  const mineIdx=w.bids.findIndex(b=>b.mine);
+  let status='';
+  if(w.st==='book') status=w.bids[w.pick]&&w.bids[w.pick].mine?'<span class="pill ok">'+t('won')+'</span>':'<span class="pill">'+t('lost')+'</span>';
+  const form=(w.st==='acc'&&mineIdx<0)?'<form class="inline" data-mkform="bid" data-w="'+w.id+'"><div class="field"><label for="bp-'+w.id+'">'+t('price_kr')+'</label><input class="input num" id="bp-'+w.id+'" type="number" min="1" value="290"></div><div class="field"><label for="bw-'+w.id+'">'+t('window')+'</label><select class="input" id="bw-'+w.id+'"><option value="0">'+tr('tidlig morgen','early morning','primera hora')+'</option><option value="1">'+tr('formiddag','late morning','media mañana')+'</option></select></div><button class="btn primary" type="submit">'+t('send_bid')+'</button></form>':'';
+  return '<div class="wish"><div class="row" style="align-items:flex-start"><div><h3>'+nf(kgs)+' '+t('job_kg')+' · '+L(PROD[w.p]).toLowerCase()+'</h3><p class="small muted">'+t('deadline')+' '+L(DATES[w.d])+' · ca. '+km+' '+t('km')+'</p></div>'+(status||stPill(w))+'</div>'+
+   '<div class="route" aria-label="'+t('stops')+'">'+a.map(x=>'<span class="stop">'+esc(x.f)+' · '+nf(x.kg)+' kg</span><span aria-hidden="true">→</span>').join('')+'<span class="stop end">Restaurant Lyng</span></div>'+
+   bidsHTML(w,false)+form+'</div>';
+ }).join('');
+ return '<section class="card"><h2>'+t('jobs')+'</h2><div class="stack" style="gap:12px">'+(jobs||'<p class="muted">'+t('no_jobs')+'</p>')+'</div></section>';
+}
+function vMarked(){
+ const roles=[['rest','afsaetning'],['farm','plan'],['carrier','jord']];
+ return '<div><p class="eyebrow">'+t('nav_marked')+'</p><h1 class="h1">'+t('mk_title')+'</h1><p class="sub" style="max-width:70ch">'+t('mk_sub')+'</p></div>'+
+  '<div class="roles" role="group" aria-label="Role">'+roles.map(r=>'<button data-mk="role" data-v="'+r[0]+'" aria-pressed="'+(M.role===r[0])+'">'+icon(r[1])+t('r_'+r[0])+'</button>').join('')+'</div>'+
+  '<p class="small muted">'+t('r_'+M.role+'_who')+'</p>'+
+  (M.role==='rest'?vRest():M.role==='farm'?vFarmer():vCarrier());
+}
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-mk]');if(!el)return;
+ const a=el.dataset.mk,i=+el.dataset.i,w=M.wishes.find(x=>x.id===el.dataset.w);
+ if(a==='role')M.role=el.dataset.v;
+ else if(a==='filter')M.filter=el.dataset.v;
+ else if(a==='fav'){M.favs.push(el.dataset.f)}
+ else if(a==='unfav'){M.favs=M.favs.filter(f=>f!==el.dataset.f)}
+ else if(a==='up'&&i>0){[M.favs[i-1],M.favs[i]]=[M.favs[i],M.favs[i-1]]}
+ else if(a==='down'&&i<M.favs.length-1){[M.favs[i+1],M.favs[i]]=[M.favs[i],M.favs[i+1]]}
+ else if(a==='acceptb'&&w){w.alloc=allocate(w);w.st='acc';
+   w.bids=[{c:'Grøn Budtjeneste',v:'ev',pr:Math.round(w.kg*6+180),w:{da:DATES[w.d].da+' 7–9',en:DATES[w.d].en+' 7–9',es:ES[DATES[w.d].en]+' 7–9'}}];toast(t('accepted_b'))}
+ else if(a==='pick'&&w){w.pick=i;w.st='book';toast(t('booked'))}
+ render(true);
+});
+document.addEventListener('submit',e=>{
+ const f=e.target.closest('[data-mkform]');if(!f)return;e.preventDefault();
+ const k=f.dataset.mkform,w=M.wishes.find(x=>x.id===f.dataset.w);
+ if(k==='wish'){const kg=parseInt(document.getElementById('wf-kg').value,10),max=parseInt(document.getElementById('wf-max').value,10);if(!(kg>0&&max>0))return;
+   const note=document.getElementById('wf-note').value.trim()||'—';
+   M.wishes.unshift({id:'w'+Date.now(),p:document.getElementById('wf-p').value,kg,d:+document.getElementById('wf-d').value,max,note:{da:note,en:note},st:'open',alloc:null,bids:[],pick:null});toast(t('wish_sent'))}
+ else if(k==='join'&&w){const kg=parseInt(document.getElementById('jk-'+w.id).value,10)||0,pr=parseInt(document.getElementById('jp-'+w.id).value,10)||0;
+   let o=M.offers.find(o=>o.f==='Kildegården'&&o.p===w.p);if(!o){o={f:'Kildegården',p:w.p,kg:0,pr:pr};M.offers.push(o)}o.kg=kg;o.pr=pr;toast(t('bid_in')+': '+nf(kg)+' kg')}
+ else if(k==='bid'&&w){const pr=parseInt(document.getElementById('bp-'+w.id).value,10);if(!(pr>0))return;const win=document.getElementById('bw-'+w.id).value==='0';
+   w.bids.push({c:'Andersens Elfragt',v:'ev',pr,w:{da:DATES[w.d].da.split(' ')[0]+' '+(win?'6–8':'9–12'),en:DATES[w.d].en.split(' ')[0]+' '+(win?'6–8':'9–12'),es:ES[DATES[w.d].en].split(' ')[0]+' '+(win?'6–8':'9–12')},mine:true});toast(t('bid_sent'))}
+ render(true);
+});
+
+const VIEWS={overblik:vOverblik,plan:vPlan,faellesskab:vCom,afsaetning:vMarket,marked:vMarked,noegletal:vNum,jord:vLand};
+function render(keepScroll){
+ chrome();
+ const y=window.scrollY;
+ document.getElementById('view').innerHTML=VIEWS[route()]();
+ if(keepScroll) window.scrollTo(0,y);
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',e=>{
+ const lb=e.target.closest('[data-lang]');
+ if(lb){S.lang=lb.dataset.lang;try{localStorage.setItem('ff-lang',S.lang)}catch(_){ }render(true);return}
+ const el=e.target.closest('[data-act]');if(!el)return;
+ const a=el.dataset.act,id=el.dataset.id,i=+el.dataset.i;
+ if(a==='task'){const x=S.tasks.find(x=>x.id==id);x.done=el.checked;render(true);return}
+ if(a==='alert-add'){S.alert='added';S.tasks.push({id:Date.now(),da:'Dæk T2 og B3 med fiberdug før onsdag',en:'Cover T2 and B3 with fleece before Wednesday',done:false});toast(t('alert_added'))}
+ else if(a==='alert-dismiss'){S.alert='dismissed'}
+ else if(a==='bed'){S.sel=id;if(window.innerWidth<1000){render(true);const p=document.querySelector('[aria-live="polite"]');if(p)p.scrollIntoView({behavior:'smooth',block:'start'});return}}
+ else if(a==='suggest'){const b=S.beds.find(x=>x.id===S.sel);const used=b.hist.slice(0,3).map(h=>CROPS[h].f).concat(CROPS[b.c].f);
+   let f=ROT[(ROT.indexOf(CROPS[b.c].f)+1)%ROT.length];let n=0;while(used.includes(f)&&n<ROT.length){f=ROT[(ROT.indexOf(f)+1)%ROT.length];n++}
+   S.suggest={bed:b.id,crop:FAMCROP[f]}}
+ else if(a==='thread'){const x=S.threads.find(x=>x.id==id);x.open=!x.open}
+ else if(a==='mentor'){S.mentors[i].done=true;toast(t('sent'))}
+ else if(a==='event'){S.events[i].on=!S.events[i].on}
+ else if(a==='accept'){S.orders.find(o=>o.id==id).st='accepted';toast(t('accepted'))}
+ else if(a==='web'){const p=S.products.find(p=>p.id===id);p.web=!p.web}
+ else if(a==='share'){S.share=!S.share}
+ else if(a==='interest'){S.parcels[i].on=!S.parcels[i].on;if(S.parcels[i].on)toast(t('interested'))}
+ else if(a==='layout'){S.parcels[i].show=!S.parcels[i].show}
+ render(true);
+});
+document.addEventListener('submit',e=>{
+ const f=e.target.closest('[data-form]');if(!f)return;e.preventDefault();
+ const k=f.dataset.form;
+ if(k==='harvest'){const v=parseFloat(document.getElementById('hv-kg').value);if(!(v>0))return;const b=S.beds.find(x=>x.id===S.sel);b.h=Math.round((b.h+v)*10)/10;toast(t('saved_h')+': '+nf(v,1)+' kg · '+b.id)}
+ else if(k==='obs'){const v=document.getElementById('obs-text').value.trim();if(!v)return;S.beds.find(x=>x.id===S.sel).obs.unshift(v);toast(t('saved_o'))}
+ else if(k==='ask'){const v=document.getElementById('ask-q').value.trim();if(!v)return;const tag=document.getElementById('ask-tag').value;
+   S.threads.unshift({id:Date.now(),q:{da:v,en:v},who:t('you'),meta:{da:'Kildegården',en:'Kildegården'},tag,open:true,a:[]})}
+ else if(k==='pool'){const v=Math.max(0,Math.min(200,parseInt(document.getElementById('pool-kg').value,10)||0));S.pool.farms.find(x=>x.me).kg=v}
+ render(true);
+});
+window.addEventListener('hashchange',()=>{render(false);window.scrollTo(0,0)});
+render(false);
+})();
+</script>
+
+</body>
+</html>
