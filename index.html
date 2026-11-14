@@ -196,6 +196,8 @@ body.fieldmode .mic-fab svg{width:30px;height:30px}
 .vsheet{position:fixed;right:calc(16px + env(safe-area-inset-right, 0px));bottom:calc(92px + env(safe-area-inset-bottom, 0px));width:min(430px, calc(100vw - 32px));max-height:calc(100vh - 140px);overflow:auto;z-index:46;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 44px rgba(0,0,0,.28);padding:18px;display:flex;flex-direction:column;gap:12px}
 body.fieldmode .vsheet{bottom:calc(108px + env(safe-area-inset-bottom, 0px))}
 .npanel{top:calc(72px + env(safe-area-inset-top, 0px));bottom:auto;max-height:calc(100vh - 100px)}
+.vset{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.vset input[type=range]{width:100%;accent-color:var(--primary)}
 .bigmic{flex:none;width:84px;height:84px;padding:0;border-radius:50%;border:0;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;align-self:center}
 .bigmic svg{width:38px;height:38px}
 .bigmic.listening{background:var(--warn);color:var(--bg);animation:pulse 1.2s ease-in-out infinite}
@@ -207,6 +209,41 @@ body.fieldmode .vsheet{bottom:calc(108px + env(safe-area-inset-bottom, 0px))}
 .notif{display:flex;gap:10px;align-items:flex-start}
 .notif.unread{font-weight:500}
 @media (prefers-reduced-motion: reduce){.bigmic.listening{animation:none}}
+.site{background:var(--surface);color:var(--ink);font-size:14px;display:flex;flex-direction:column}
+.site section{padding:16px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.site h3{font-family:var(--display);font-size:19px;font-weight:600;color:var(--primary)}
+.site ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.site-hero{background:var(--primary);color:var(--on-primary);padding:22px 20px 0;display:flex;flex-direction:column;gap:6px}
+.site-hero h2{font-family:var(--display);font-size:28px;font-weight:600;line-height:1.15}
+.site-kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.site-fields{width:100%;height:auto;display:block;margin-top:10px;color:var(--on-primary)}
+ul.site-crops{flex-direction:row;flex-wrap:wrap;gap:6px;list-style:none;padding:0}
+.site-crops li{background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:13px}
+.site-shares{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.site-share{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.site-price{font-family:var(--display);font-size:24px;font-weight:600;color:var(--primary)}
+.site-form{display:flex;flex-direction:column;gap:10px}
+.site-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.site-form label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
+.site-form input,.site-form select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);font-weight:400;min-width:0}
+.site-form label.site-check{flex-direction:row;align-items:center;gap:8px;font-weight:500}
+.site-check input{width:18px;height:18px;accent-color:var(--primary)}
+.site-form button{align-self:flex-start;background:var(--primary);color:var(--on-primary);border:0;border-radius:10px;padding:10px 18px;font-weight:700}
+.site-done{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok);padding:12px 14px;border-radius:10px;font-weight:600}
+.site-foot{font-size:12px;color:var(--muted);padding:12px 20px;border-top:1px solid var(--line)}
+.site.full section{padding:24px 32px}
+.site.full .site-hero{padding:40px 32px 0}
+.site.full .site-hero h2{font-size:40px}
+.browser{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.browser-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface-2);font-size:12px;color:var(--muted)}
+.browser-bar i{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.browser-bar span{margin-left:8px;background:var(--bg);border-radius:6px;padding:2px 10px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#csaPreview{max-height:760px;overflow:auto}
+.cropgrid{display:flex;flex-wrap:wrap;gap:6px}
+.cropchk{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px}
+.cropchk input{accent-color:var(--primary)}
+.csa-tag{font-size:10px;font-weight:700;letter-spacing:.06em;background:var(--accent-soft);color:var(--on-accent-soft);border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:1px}
+.csa-strip{grid-column:1/-1}
 .tabbar{display:none}
 @media (max-width: 1000px){
   .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -229,6 +266,9 @@ body.fieldmode .vsheet{bottom:calc(108px + env(safe-area-inset-bottom, 0px))}
   body.fieldmode .vsheet{bottom:calc(164px + env(safe-area-inset-bottom, 0px))}
   .npanel{top:calc(64px + env(safe-area-inset-top, 0px));bottom:auto}
   .fieldbtn span{display:none}
+  .site-shares,.site-grid{grid-template-columns:1fr}
+  .tabbar a{font-size:9.5px;overflow:hidden}
+  .tabbar a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
@@ -251,6 +291,7 @@ body.fieldmode .vsheet{bottom:calc(108px + env(safe-area-inset-bottom, 0px))}
         <div class="farm"><div class="avatar" aria-hidden="true">MK</div><div><strong>Kildegården</strong><small id="farmMeta"></small></div></div>
         <div class="topr">
           <button type="button" class="fieldbtn" id="fieldBtn" data-vc="field" aria-pressed="false"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16.5 8.5a5 5 0 0 1 0 7"/></svg><span></span></button>
+          <button type="button" class="bell" id="vsBtn" data-vc="vsopen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
           <button type="button" class="bell" id="bell" data-vc="bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg><span class="badge" id="bellCount" hidden></span></button>
           <div class="lang" role="group" aria-label="Language">
             <button type="button" id="lang-da" data-lang="da">DA</button>
@@ -280,9 +321,10 @@ const ICONS={
   afsaetning:'<path d="M4 9l2-5h12l2 5M4 9v11h16V9M4 9h16M9 20v-6h6v6"/>',
   noegletal:'<path d="M4 20V10m6 10V4m6 16v-8m4 8H2"/>',
   jord:'<path d="M3 18c4-6 7-6 9-3s5 3 9-3M3 9l5-4 4 3 4-3 5 4"/>',
+  csa:'<path d="M4 10h16l-1.5 9h-13zM8 10l3-6M16 10l-3-6M9 14v2M12 14v2M15 14v2"/>',
   marked:'<path d="M3 7h18l-2 5H5zM5 12v8h14v-8M9 16h6M7 7l2-3h6l2 3"/>'
 };
-const ROUTES=['overblik','plan','faellesskab','afsaetning','marked','noegletal','jord'];
+const ROUTES=['overblik','plan','csa','faellesskab','afsaetning','marked','noegletal','jord'];
 
 const I18N={
 da:{
@@ -465,7 +507,7 @@ const S={
  sel:'A1',suggest:null,
  orders:[
   {id:1,who:'Restaurant Lyng',da:'12 kg grønkål, 8 kg rødbeder',en:'12 kg kale, 8 kg beetroot',due:{da:'fre. 13/11',en:'Fri 13/11'},st:'open',kr:1240},
-  {id:2,who:'Webshop · 7 ordrer',da:'Grøntsagskasser, æg',en:'Veg boxes, eggs',due:{da:'lør. 14/11',en:'Sat 14/11'},st:'open',kr:2310},
+  {id:2,who:{da:'Webshop · 7 ordrer',en:'Web shop · 7 orders',es:'Tienda online · 7 pedidos'},da:'Grøntsagskasser, æg',en:'Veg boxes, eggs',due:{da:'lør. 14/11',en:'Sat 14/11'},st:'open',kr:2310},
   {id:3,who:'Byens Madhus',da:'20 kg porrer',en:'20 kg leeks',due:{da:'tir. 17/11',en:'Tue 17/11'},st:'accepted',kr:900}
  ],
  products:[
@@ -517,7 +559,7 @@ const kr=n=>tr(nf(n)+' kr.','DKK '+nf(n),nf(n)+' DKK');
 const dt=s=>new Date(s+'T12:00:00').toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[k]+'</svg>';
 const famVar=f=>'--fam:var(--f-'+f+')';
-const route=()=>{const h=(location.hash||'').slice(1);return ROUTES.includes(h)?h:'overblik'};
+const route=()=>{const h=(location.hash||'').slice(1);return (ROUTES.includes(h)||h==='csa-site')?h:'overblik'};
 function harvestPct(){let p=0,h=0;S.beds.forEach(b=>{if(b.plan>0){p+=b.plan;h+=Math.min(b.h,b.plan*1.2)}});return p?Math.round(h/p*100):0}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
 
@@ -545,11 +587,11 @@ function vOverblik(){
  else alert='<section class="card"><p class="eyebrow">'+t('alert_t')+'</p><p class="small muted">'+t('alert_dismissed')+'</p></section>';
  const th=S.threads.slice(0,2).map(x=>'<div><p style="font-weight:600">'+esc(L(x.q))+'</p><p class="small muted">'+esc(x.who)+' · '+x.a.length+' '+t('answers')+'</p></div>').join('');
  return '<div><p class="eyebrow">'+t('date')+'</p><h1 class="h1">'+t('hello')+'</h1></div>'+
- '<div class="grid g3">'+
+ '<div class="grid g3">'+(CSA.on?csaBoxCard(true):'')+
   '<section class="card"><div class="head"><h2>'+t('today')+' <span class="small muted num" style="font-weight:500">'+S.tasks.filter(x=>x.done).length+'/'+S.tasks.length+'</span></h2><button class="linkbtn" data-vc="readtasks">'+t('read_aloud')+'</button></div><div class="list">'+tasks+'</div></section>'+
   alert+
   '<section class="card"><div class="head"><h2>'+t('harvest')+'</h2><a href="#plan">'+t('open_plan')+'</a></div><p class="big">'+hp+' %</p><div class="bar"><i style="width:'+Math.min(hp,100)+'%"></i></div><p class="small muted">'+t('harvest_sub')+'</p></section>'+
-  '<section class="card"><div class="head"><h2>'+t('orders')+'</h2><a href="#afsaetning">'+t('see_all')+'</a></div><p><span class="big">'+open.length+'</span> <span class="muted">'+t('orders_open')+'</span></p><div class="list">'+open.slice(0,2).map(o=>'<div class="row"><span><b style="font-weight:600">'+esc(o.who)+'</b><br><span class="small muted">'+esc(L(o))+'</span></span><span class="small muted num">'+esc(L(o.due))+'</span></div>').join('')+'</div></section>'+
+  '<section class="card"><div class="head"><h2>'+t('orders')+'</h2><a href="#afsaetning">'+t('see_all')+'</a></div><p><span class="big">'+open.length+'</span> <span class="muted">'+t('orders_open')+'</span></p><div class="list">'+open.slice(0,2).map(o=>'<div class="row"><span><b style="font-weight:600">'+esc(L(o.who))+'</b><br><span class="small muted">'+esc(L(o))+'</span></span><span class="small muted num">'+esc(L(o.due))+'</span></div>').join('')+'</div></section>'+
   '<section class="card"><h2>'+t('budget')+'</h2><p class="big">'+kr(412000)+'</p><div class="bar accent"><i style="width:92%"></i></div><p class="small muted">'+t('budget_sub')+': '+kr(412000)+' / '+kr(450000)+'</p><p><span class="pill accent">'+t('grant')+'</span></p></section>'+
   '<section class="card"><div class="head"><h2>'+t('community')+'</h2><a href="#faellesskab">'+t('see_all')+'</a></div><div class="list">'+th+'</div></section>'+
  '</div>';
@@ -557,7 +599,7 @@ function vOverblik(){
 
 function bedTile(b){
  const c=CROPS[b.c],pct=b.plan?Math.min(100,Math.round(b.h/b.plan*100)):0;
- return '<button class="bed" style="'+famVar(c.f)+'" data-act="bed" data-id="'+b.id+'" aria-pressed="'+(S.sel===b.id)+'"><span class="id">'+b.id+'</span><span class="crop">'+L(c)+'</span>'+
+ return '<button class="bed" style="'+famVar(c.f)+'" data-act="bed" data-id="'+b.id+'" aria-pressed="'+(S.sel===b.id)+'"><span class="id">'+b.id+(CSA.on&&CSA.box.some(x=>(CSA.swaps[x.c]||x.c)===b.c)?'<span class="csa-tag">'+t('csa_badge')+'</span>':'')+'</span><span class="crop">'+L(c)+'</span>'+
   (b.plan?'<span class="bar"><i style="width:'+pct+'%"></i></span><span class="small muted num">'+nf(b.h)+' / '+nf(b.plan)+' kg</span>':'<span class="small muted">'+t('expected')+': '+dt(b.exp)+'</span>')+'</button>';
 }
 function bedPanel(){
@@ -584,6 +626,7 @@ function vPlan(){
  const used=[...new Set(S.beds.map(b=>CROPS[b.c].f))];
  const legend=used.map(f=>'<span><i class="dot" style="'+famVar(f)+'"></i>'+L(FAM[f])+'</span>').join('');
  return '<div><p class="eyebrow">'+t('nav_plan')+' 2026</p><h1 class="h1">'+t('plan_title')+'</h1><p class="sub">'+t('plan_sub')+'</p></div>'+
+ (CSA.on?csaBoxCard(false):'')+
  '<div class="split"><section class="card"><div class="legend">'+legend+'</div>'+
   '<div class="zone"><h3>'+t('field')+'</h3><div class="beds">'+S.beds.filter(b=>b.z==='field').map(bedTile).join('')+'</div></div>'+
   '<div class="zone"><h3>'+t('tunnel')+'</h3><div class="beds tunnel">'+S.beds.filter(b=>b.z==='tunnel').map(bedTile).join('')+'</div></div>'+
@@ -606,14 +649,14 @@ function vCom(){
 
 function vMarket(){
  const open=S.orders.filter(o=>o.st==='open').length;
- const orders=S.orders.map(o=>'<div class="row" style="flex-wrap:wrap"><span style="min-width:0;flex:1"><b style="font-weight:600">'+esc(o.who)+'</b><br><span class="small muted">'+esc(L(o))+' · '+t('due')+' '+esc(L(o.due))+'</span></span><span class="num small" style="font-weight:600">'+kr(o.kr)+'</span>'+(o.st==='open'?'<button class="btn primary" data-act="accept" data-id="'+o.id+'">'+t('accept')+'</button>':'<span class="pill ok">'+t('accepted')+'</span>')+'</div>').join('');
+ const orders=S.orders.map(o=>'<div class="row" style="flex-wrap:wrap"><span style="min-width:0;flex:1"><b style="font-weight:600">'+esc(L(o.who))+'</b><br><span class="small muted">'+esc(L(o))+' · '+t('due')+' '+esc(L(o.due))+'</span></span><span class="num small" style="font-weight:600">'+kr(o.kr)+'</span>'+(o.st==='open'?'<button class="btn primary" data-act="accept" data-id="'+o.id+'">'+t('accept')+'</button>':'<span class="pill ok">'+t('accepted')+'</span>')+'</div>').join('');
  const prods=S.products.map(p=>'<tr><td style="font-weight:500">'+L(p)+'</td><td class="num">'+kr(p.price)+' / '+p.unit+'</td><td class="num">'+nf(p.stock)+' '+p.unit+'</td><td><button class="switch" role="switch" aria-checked="'+p.web+'" aria-label="'+t('webshop')+': '+esc(L(p))+'" data-act="web" data-id="'+p.id+'"></button></td></tr>').join('');
  const P=S.pool,tot=P.farms.reduce((s,f)=>s+f.kg,0),mine=P.farms.find(f=>f.me);
  const max=Math.max(P.need,tot);
  const rows=P.farms.map(f=>'<div class="pool-row'+(f.me?' me':'')+'"><span'+(f.me?' style="font-weight:600"':'')+'>'+esc(f.n)+'</span><span class="bar"><i style="width:'+(f.kg/max*100)+'%"></i></span><span class="num" style="text-align:right">'+nf(f.kg)+' kg</span></div>').join('');
  const status=tot>=P.need?'<span class="pill ok">'+t('pool_full')+'</span>':'<span class="pill warn">'+nf(P.need-tot)+' kg '+t('pool_missing')+'</span>';
  return '<div><p class="eyebrow">'+t('nav_afsaetning')+'</p><h1 class="h1">'+t('m_title')+'</h1><p class="sub">'+t('m_sub')+'</p></div>'+
- '<div class="grid g3"><section class="card"><p class="small muted">'+t('week_rev')+'</p><p class="big">'+kr(8740)+'</p></section><section class="card"><p class="small muted">'+t('open_orders')+'</p><p class="big">'+open+'</p></section><section class="card"><p class="small muted">'+t('csa')+'</p><p class="big">28</p></section></div>'+
+ '<div class="grid g3"><section class="card"><p class="small muted">'+t('week_rev')+'</p><p class="big">'+kr(8740)+'</p></section><section class="card"><p class="small muted">'+t('open_orders')+'</p><p class="big">'+open+'</p></section><section class="card"><p class="small muted">'+t('csa')+'</p><p class="big">'+(CSA.on?csaCount():'–')+'</p></section></div>'+
  '<div class="split"><div class="stack" style="gap:16px"><section class="card"><h2>'+t('incoming')+'</h2><div class="list">'+orders+'</div></section>'+
   '<section class="card"><h2>'+t('products')+'</h2><div class="tablewrap"><table><thead><tr><th>'+t('product')+'</th><th>'+t('price')+'</th><th>'+t('stock')+'</th><th>'+t('webshop')+'</th></tr></thead><tbody>'+prods+'</tbody></table></div></section></div>'+
   '<section class="card"><p class="eyebrow">'+t('pool_title')+'</p><h2 style="font-family:var(--display);font-size:22px;font-weight:600">'+tr('Kommunekøkken (eksempel)','Municipal kitchen (example)','Comedor municipal (ejemplo)')+'</h2><p class="small muted">'+t('pool_sub')+'</p>'+
@@ -821,6 +864,9 @@ Object.assign(I18N.es,{voice_btn:'Hablar',voice_title:'Habla con Agelli',listeni
  mic_na:'El micrófono no está disponible en esta vista. Escribe la orden o toca un ejemplo: la respuesta se leerá en voz alta igualmente. El control por voz funciona en Chrome y Safari al abrir el prototipo como archivo o mediante un enlace web.',
  replay:'Volver a leer',notif_title:'Mensajes',read_all:'Leer nuevos',simulate:'Simular mensaje nuevo',field_mode:'Modo campo',field_on:'Modo campo activado. Los mensajes nuevos se leerán en voz alta.',field_off:'Modo campo desactivado.',
  read_aloud:'Leer en voz alta',close:'Cerrar',no_notif:'No hay mensajes nuevos.',field_banner:'Modo campo: los mensajes nuevos se leen en voz alta automáticamente y puedes controlarlo todo con la voz.',new_msg:'Mensaje nuevo',stop:'Parar'});
+Object.assign(I18N.da,{vs_title:'Stemme og tempo',vs_voice:'Stemme',vs_rec:'anbefalet',vs_rate:'Tempo',vs_test:'Hør prøve',vs_reset:'Brug anbefalet',vs_none:'Der er ingen dansk stemme på denne enhed.',vs_tip:'Bedste kvalitet: hent en “forbedret” eller “premium” stemme i enhedens indstillinger for oplæst indhold, eller brug Microsoft Edge med de gratis “Natural”-stemmer.',vs_sample:'Hej Maja. Du har 4 opgaver i dag, og der er frost på vej onsdag nat.',vs_settings:'Stemmeindstillinger'});
+Object.assign(I18N.en,{vs_title:'Voice and speed',vs_voice:'Voice',vs_rec:'recommended',vs_rate:'Speed',vs_test:'Play sample',vs_reset:'Use recommended',vs_none:'There is no English voice on this device.',vs_tip:'Best quality: download an “enhanced” or “premium” voice in your device’s spoken-content settings, or use Microsoft Edge with its free “Natural” voices.',vs_sample:'Hi Maja. You have 4 tasks today, and frost is on its way on Wednesday night.',vs_settings:'Voice settings'});
+Object.assign(I18N.es,{vs_title:'Voz y velocidad',vs_voice:'Voz',vs_rec:'recomendada',vs_rate:'Velocidad',vs_test:'Escuchar muestra',vs_reset:'Usar la recomendada',vs_none:'No hay ninguna voz en español en este dispositivo.',vs_tip:'Mejor calidad: descarga una voz “mejorada” o “premium” en los ajustes de contenido leído de tu dispositivo, o usa Microsoft Edge con sus voces “Natural” gratuitas.',vs_sample:'Hola, Maja. Tienes 4 tareas hoy y viene helada el miércoles por la noche.',vs_settings:'Ajustes de voz'});
 I18N.da.obs_note='Tip: tryk på mikrofonen og sig fx “Notér i bed B3: bladlus på spinaten”.';
 I18N.en.obs_note='Tip: tap the microphone and say e.g. “Note in bed B3: aphids on the spinach”.';
 I18N.es.obs_note='Consejo: toca el micrófono y di p. ej. “Anota en el bancal B3: pulgones en las espinacas”.';
@@ -845,11 +891,36 @@ const V={open:false,npanel:false,listening:false,micBlocked:false,said:'',reply:
  ]};
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let rec=null;
+const VP={uri:{},rate:1,showSettings:false};
+try{const v=JSON.parse(localStorage.getItem('agelli-voice')||'null');if(v){VP.uri=v.uri||{};VP.rate=v.rate||1}}catch(e){}
+function saveVP(){try{localStorage.setItem('agelli-voice',JSON.stringify({uri:VP.uri,rate:VP.rate}))}catch(e){}}
+function langVoices(){try{return speechSynthesis.getVoices().filter(v=>(v.lang||'').toLowerCase().replace('_','-').startsWith(S.lang))}catch(e){return []}}
+function voiceScore(v){const n=(v.name||'').toLowerCase();let sc=0;
+ if(/natural|neural/.test(n))sc+=6;if(/premium/.test(n))sc+=5;if(/enhanced|forbedret|mejorad|improved|siri/.test(n))sc+=4;
+ if(/google/.test(n))sc+=2;if(/online/.test(n))sc+=2;if(v.localService===false)sc+=1;
+ const want=LOC().toLowerCase();if((v.lang||'').toLowerCase().replace('_','-')===want)sc+=1;if(/compact|eloquence|espeak/.test(n))sc-=3;return sc}
+function bestVoice(){const vs=langVoices();if(!vs.length)return null;return vs.slice().sort((a,b)=>voiceScore(b)-voiceScore(a))[0]}
+function pickVoice(){const vs=langVoices(),u=VP.uri[S.lang];return (u&&vs.find(v=>v.voiceURI===u))||bestVoice()}
+function chunks(text){
+ const out=[];String(text).replace(/\s+/g,' ').trim().split(/(?<=[.!?])\s+/).forEach(sen=>{
+  if(sen.length<=160){out.push(sen);return}
+  let cur='';sen.split(/(?<=[,;–])\s+/).forEach(part=>{if((cur+' '+part).trim().length>160&&cur){out.push(cur.trim());cur=part}else cur=(cur+' '+part).trim()});if(cur)out.push(cur)});
+ return out.filter(x=>x);
+}
 function say(text){
  if(!text||!('speechSynthesis' in window))return;
- try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=LOC();u.rate=1;
-  const v=speechSynthesis.getVoices().find(v=>(v.lang||'').toLowerCase().replace('_','-').startsWith(S.lang));if(v)u.voice=v;
-  speechSynthesis.speak(u)}catch(e){}
+ try{speechSynthesis.cancel();const v=pickVoice();
+  chunks(text).forEach(c=>{const u=new SpeechSynthesisUtterance(c);u.lang=v?v.lang:LOC();u.rate=VP.rate;u.pitch=1;if(v)u.voice=v;speechSynthesis.speak(u)});
+ }catch(e){}
+}
+function voiceSettingsHTML(){
+ const vs=langVoices(),best=bestVoice(),cur=pickVoice();
+ const opts=vs.length?vs.slice().sort((a,b)=>voiceScore(b)-voiceScore(a)).map(v=>'<option value="'+esc(v.voiceURI)+'"'+(cur&&v.voiceURI===cur.voiceURI?' selected':'')+'>'+esc(v.name)+(best&&v.voiceURI===best.voiceURI?' – '+t('vs_rec'):'')+'</option>').join(''):'';
+ return '<div class="vset"><div class="row"><p class="small" style="font-weight:600">'+t('vs_title')+'</p></div>'+
+  (vs.length?'<div class="field"><label for="vs-voice" class="small">'+t('vs_voice')+'</label><select class="input" id="vs-voice" data-vs="voice">'+opts+'</select></div>':'<p class="small muted">'+t('vs_none')+'</p>')+
+  '<div class="field"><label for="vs-rate" class="small">'+t('vs_rate')+': <span class="num">'+nf(VP.rate,2)+'×</span></label><input id="vs-rate" type="range" min="0.75" max="1.35" step="0.05" value="'+VP.rate+'" data-vs="rate"></div>'+
+  '<div class="btns"><button class="btn primary" data-vc="vstest">'+t('vs_test')+'</button><button class="btn" data-vc="vsreset">'+t('vs_reset')+'</button></div>'+
+  '<p class="small muted">'+t('vs_tip')+'</p></div>';
 }
 function hush(){try{speechSynthesis.cancel()}catch(e){}}
 const unread=()=>V.notifs.filter(n=>!n.read);
@@ -906,6 +977,7 @@ function handle(raw){
   const pl=b.plan?tr(` Høstet i alt ${nf(b.h,1)} af ${nf(b.plan)} kilo, ${Math.round(b.h/b.plan*100)} procent af planen.`,` ${nf(b.h,1)} of ${nf(b.plan)} kilos harvested in total, ${Math.round(b.h/b.plan*100)} percent of plan.`,` En total ${nf(b.h,1)} de ${nf(b.plan)} kilos, el ${Math.round(b.h/b.plan*100)} por ciento del plan.`):'';
   return tr(`Registreret ${nf(kg,1)} kilo ${c} i bed ${b.id}.`,`Recorded ${nf(kg,1)} kilos of ${c} in bed ${b.id}.`,`Registrados ${nf(kg,1)} kilos de ${c} en el bancal ${b.id}.`)+pl;
  }
+ if(/(csa|kasse|kasser|andel|box|boxes|caja|cajas|cuota)/.test(s)) return csaReply();
  if(/(opgave|to-do|todo|gøremål|i dag|dagens|task|today|tarea|hoy|pendiente)/.test(s)) return tasksReply();
  if(/(besked|notifikation|meddelelse|nyheder|message|notification|alert|mensaje|aviso|notific)/.test(s)) return notifReply(false);
  return tr('Det forstod jeg ikke helt. Sig “hjælp” for at høre, hvad du kan sige.','I didn’t quite get that. Say “help” to hear what you can say.','No lo he entendido bien. Di “ayuda” para oír lo que puedes decir.');
@@ -944,6 +1016,7 @@ function renderVoice(){
  document.body.classList.toggle('fieldmode',V.field);
  const fb=document.getElementById('fieldBtn');fb.setAttribute('aria-pressed',V.field);fb.querySelector('span').textContent=t('field_mode');
  const u=unread().length,bc=document.getElementById('bellCount');bc.textContent=u;bc.hidden=!u;
+ document.getElementById('vsBtn').setAttribute('aria-label',t('vs_settings'));document.getElementById('vsBtn').setAttribute('title',t('vs_settings'));
  document.getElementById('bell').setAttribute('aria-label',t('notif_title')+(u?' ('+u+')':''));
  const fab=document.getElementById('micFab');fab.classList.toggle('listening',V.listening);fab.setAttribute('aria-expanded',V.open);
  fab.innerHTML=MIC+'<span>'+(V.listening?t('stop'):t('voice_btn'))+'</span>';
@@ -957,7 +1030,8 @@ function renderVoice(){
   (V.said?'<p class="said"><b>'+t('you_said')+':</b> “'+esc(V.said)+'”</p>':'')+
   (V.reply?'<div class="reply" aria-live="polite"><p style="flex:1">'+esc(V.reply)+'</p><button class="iconbtn" data-vc="replay" aria-label="'+t('replay')+'">'+SPK+'</button></div>':'')+
   '<form class="inline" data-vcform="cmd"><div class="field"><label for="vc-text">'+t('type_cmd')+'</label><input class="input" id="vc-text" autocomplete="off"></div><button class="btn primary" type="submit">'+t('send')+'</button></form>'+
-  '<div class="stack"><p class="small" style="font-weight:600">'+t('examples')+'</p><div class="filters">'+EXAMPLES[S.lang].map((x,i)=>'<button data-vc="ex" data-i="'+i+'">'+esc(x)+'</button>').join('')+'</div></div>';
+  '<div class="stack"><p class="small" style="font-weight:600">'+t('examples')+'</p><div class="filters">'+EXAMPLES[S.lang].map((x,i)=>'<button data-vc="ex" data-i="'+i+'">'+esc(x)+'</button>').join('')+'</div></div>'+
+  '<button class="linkbtn" style="align-self:flex-start" data-vc="vsettings" aria-expanded="'+VP.showSettings+'">'+(VP.showSettings?'▾ ':'▸ ')+t('vs_settings')+'</button>'+(VP.showSettings?voiceSettingsHTML():'');
  }
  const np=document.getElementById('npanel');np.hidden=!V.npanel;
  if(V.npanel){
@@ -971,6 +1045,10 @@ document.addEventListener('click',e=>{
  const a=el.dataset.vc;
  if(a==='open'){if(!V.open){V.open=true;V.npanel=false;listen()}else if(V.listening){listen()}else{V.open=false;hush()}renderVoice();return}
  if(a==='close'){V.open=false;if(V.listening)listen();hush()}
+ else if(a==='vsettings'){VP.showSettings=!VP.showSettings}
+ else if(a==='vsopen'){V.open=true;V.npanel=false;VP.showSettings=true;renderVoice();const el=document.getElementById('vs-voice')||document.getElementById('vs-rate');if(el)el.scrollIntoView({block:'center'});return}
+ else if(a==='vstest'){say(t('vs_sample'));return}
+ else if(a==='vsreset'){delete VP.uri[S.lang];saveVP()}
  else if(a==='listen')listen();
  else if(a==='replay')say(V.reply);
  else if(a==='ex'){runCommand(EXAMPLES[S.lang][+el.dataset.i]);return}
@@ -987,10 +1065,153 @@ document.addEventListener('submit',e=>{
  const f=e.target.closest('[data-vcform]');if(!f)return;e.preventDefault();
  const v=document.getElementById('vc-text').value.trim();if(v)runCommand(v);
 });
-try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{if(V.open&&VP.showSettings)renderVoice()}}catch(e){}
+document.addEventListener('change',e=>{const el=e.target.closest('[data-vs]');if(!el)return;if(el.dataset.vs==='voice'){VP.uri[S.lang]=el.value;saveVP();say(t('vs_sample'))}});
+document.addEventListener('input',e=>{const el=e.target.closest('[data-vs="rate"]');if(!el)return;VP.rate=parseFloat(el.value)||1;saveVP();const l=el.closest('.field').querySelector('label span');if(l)l.textContent=nf(VP.rate,2)+'×'});
+document.addEventListener('change',e=>{if(e.target.closest('[data-vs="rate"]'))say(t('vs_sample'))});
 
-const VIEWS={overblik:vOverblik,plan:vPlan,faellesskab:vCom,afsaetning:vMarket,marked:vMarked,noegletal:vNum,jord:vLand};
+/* ---------- CSA: the farm's own subscription scheme, website, sign-up and weekly boxes ---------- */
+Object.assign(I18N.da,{nav_csa:'CSA',tab_csa:'CSA',
+ csa_title:'CSA-ordning',csa_sub:'Lad faste medlemmer betale for en andel af høsten. Agelli laver jeres website med sign-up og regner ugens kasser ind i planen.',
+ csa_on:'CSA er slået til',csa_off:'CSA er slået fra',csa_toggle:'CSA aktiv',csa_start_t:'Start en CSA-ordning',csa_start:'Med en CSA (Community Supported Agriculture) betaler medlemmerne for en andel af sæsonens høst på forhånd. Det giver sikker indtægt før sæsonen og faste aftagere hver uge.',csa_enable:'Slå CSA til',
+ setup:'Opsætning',f_name:'Ordningens navn',f_desc:'Om gården',f_season:'Sæson (uge fra–til)',f_pickup:'Afhentning',f_small:'Lille andel (kr./sæson)',f_large:'Stor andel (kr./sæson)',f_max:'Maks. antal andele',f_terms:'Betingelser (én pr. linje)',f_crops:'Afgrøder i sæsonen',
+ site:'Jeres CSA-website',open_site:'Åbn i fuld visning',back_app:'Tilbage til Agelli',members:'Medlemmer',waitlist:'på venteliste',paid:'betalt',unpaid:'mangler betaling',recent:'Seneste tilmeldinger',
+ small:'Lille',large:'Stor',share_small_d:'Til 1–2 personer',share_large_d:'Til en familie',per_season:'pr. sæson',per_week:'pr. uge',weeks:'uger',
+ s_about:'Om gården',s_get:'Det får du',s_shares:'Andele og priser',s_pickup:'Afhentning',s_terms:'Betingelser',s_signup:'Bliv medlem',s_name:'Navn',s_email:'E-mail',s_phone:'Telefon',s_size:'Andel',s_accept:'Jeg accepterer betingelserne',s_submit:'Tilmeld mig',
+ s_thanks:'Tak for din tilmelding! Du får en bekræftelse og betalingsoplysninger på mail.',s_wait:'Sæsonen er fuldt booket. Du er sat på ventelisten.',s_full:'Fuldt booket – tilmeld dig ventelisten',s_spots:'ledige pladser',s_season:'Sæson: uge',s_demo:'Eksempel genereret af Agelli – tilmeldinger gemmes ikke.',
+ box_title:'CSA-kassen i uge 45',box_sub:'Behov ud fra antal andele sammenholdt med det, bedene og lageret kan levere.',need:'Behov',avail:'Til rådighed',enough:'Nok',short:'Mangler',swap:'Byt til',swapped:'Byttet',boxes:'kasser',pack_day:'pakkes torsdag',all_ready:'Alt klar til kassen',missing_items:'råvare mangler',open_csa:'Åbn CSA',csa_badge:'CSA',
+ new_member:'Ny CSA-tilmelding'});
+Object.assign(I18N.en,{nav_csa:'CSA',tab_csa:'CSA',
+ csa_title:'CSA scheme',csa_sub:'Let regular members pay for a share of the harvest. Agelli builds your website with sign-up and adds the weekly boxes to your plan.',
+ csa_on:'CSA is on',csa_off:'CSA is off',csa_toggle:'CSA active',csa_start_t:'Start a CSA scheme',csa_start:'With CSA (Community Supported Agriculture), members pay up front for a share of the season’s harvest. It gives secure income before the season and regular customers every week.',csa_enable:'Turn on CSA',
+ setup:'Setup',f_name:'Scheme name',f_desc:'About the farm',f_season:'Season (week from–to)',f_pickup:'Pick-up',f_small:'Small share (DKK/season)',f_large:'Large share (DKK/season)',f_max:'Max number of shares',f_terms:'Terms (one per line)',f_crops:'Crops this season',
+ site:'Your CSA website',open_site:'Open full view',back_app:'Back to Agelli',members:'Members',waitlist:'on the waiting list',paid:'paid',unpaid:'payment due',recent:'Latest sign-ups',
+ small:'Small',large:'Large',share_small_d:'For 1–2 people',share_large_d:'For a family',per_season:'per season',per_week:'per week',weeks:'weeks',
+ s_about:'About the farm',s_get:'What you get',s_shares:'Shares and prices',s_pickup:'Pick-up',s_terms:'Terms',s_signup:'Become a member',s_name:'Name',s_email:'Email',s_phone:'Phone',s_size:'Share',s_accept:'I accept the terms',s_submit:'Sign me up',
+ s_thanks:'Thank you for signing up! You’ll receive a confirmation and payment details by email.',s_wait:'The season is fully booked. You’ve been added to the waiting list.',s_full:'Fully booked – join the waiting list',s_spots:'places left',s_season:'Season: week',s_demo:'Example generated by Agelli – sign-ups are not saved.',
+ box_title:'CSA box, week 45',box_sub:'Need based on the number of shares compared with what beds and storage can deliver.',need:'Need',avail:'Available',enough:'Enough',short:'Short',swap:'Swap for',swapped:'Swapped',boxes:'boxes',pack_day:'packed Thursday',all_ready:'Everything ready for the box',missing_items:'item short',open_csa:'Open CSA',csa_badge:'CSA',
+ new_member:'New CSA sign-up'});
+Object.assign(I18N.es,{nav_csa:'CSA',tab_csa:'CSA',
+ csa_title:'Programa CSA',csa_sub:'Deja que socios fijos paguen por una parte de la cosecha. Agelli crea vuestra web con inscripción y suma las cajas semanales al plan.',
+ csa_on:'CSA activada',csa_off:'CSA desactivada',csa_toggle:'CSA activa',csa_start_t:'Crea un programa CSA',csa_start:'Con una CSA (agricultura sostenida por la comunidad), los socios pagan por adelantado una parte de la cosecha de la temporada. Da ingresos seguros antes de la temporada y clientes fijos cada semana.',csa_enable:'Activar CSA',
+ setup:'Configuración',f_name:'Nombre del programa',f_desc:'Sobre la finca',f_season:'Temporada (semana de–a)',f_pickup:'Recogida',f_small:'Cuota pequeña (DKK/temporada)',f_large:'Cuota grande (DKK/temporada)',f_max:'Máx. de cuotas',f_terms:'Condiciones (una por línea)',f_crops:'Cultivos de la temporada',
+ site:'Vuestra web CSA',open_site:'Abrir a pantalla completa',back_app:'Volver a Agelli',members:'Socios',waitlist:'en lista de espera',paid:'pagado',unpaid:'pago pendiente',recent:'Últimas inscripciones',
+ small:'Pequeña',large:'Grande',share_small_d:'Para 1–2 personas',share_large_d:'Para una familia',per_season:'por temporada',per_week:'por semana',weeks:'semanas',
+ s_about:'Sobre la finca',s_get:'Lo que recibes',s_shares:'Cuotas y precios',s_pickup:'Recogida',s_terms:'Condiciones',s_signup:'Hazte socio',s_name:'Nombre',s_email:'Correo electrónico',s_phone:'Teléfono',s_size:'Cuota',s_accept:'Acepto las condiciones',s_submit:'Inscribirme',
+ s_thanks:'¡Gracias por inscribirte! Recibirás una confirmación y los datos de pago por correo.',s_wait:'La temporada está completa. Te hemos apuntado a la lista de espera.',s_full:'Completo – apúntate a la lista de espera',s_spots:'plazas libres',s_season:'Temporada: semana',s_demo:'Ejemplo generado por Agelli: las inscripciones no se guardan.',
+ box_title:'Caja CSA, semana 45',box_sub:'Necesidad según el número de cuotas, comparada con lo que pueden dar los bancales y el almacén.',need:'Necesidad',avail:'Disponible',enough:'Suficiente',short:'Falta',swap:'Cambiar por',swapped:'Cambiado',boxes:'cajas',pack_day:'se preparan el jueves',all_ready:'Todo listo para la caja',missing_items:'producto falta',open_csa:'Abrir CSA',csa_badge:'CSA',
+ new_member:'Nueva inscripción CSA'});
+const CSA={on:true,name:null,desc:null,pickup:null,terms:null,w1:22,w2:47,small:2400,large:3900,max:40,
+ crops:['kale','leek','carrot','beet','salad','spinach','tomato','onion','pea','chard','parsnip','garlic'],
+ members:{small:18,large:10},wait:0,paidPct:89,sent:null,
+ recent:[{n:'Mette L.',s:'large',d:'4/11'},{n:'Jonas P.',s:'small',d:'1/11'},{n:'Aisha K.',s:'small',d:'29/10'}],
+ box:[{c:'kale',s:0.5,l:1},{c:'leek',s:0.75,l:1.5},{c:'carrot',s:1,l:2},{c:'beet',s:0.75,l:1.5},{c:'salad',s:0.25,l:0.5}],
+ swaps:{}};
+const CSA_DEF={
+ name:{da:'Kildegårdens Grøntsagsandel',en:'Kildegården Vegetable Share',es:'Cuota de verduras de Kildegården'},
+ desc:{da:'Kildegården er en lille regenerativ gård på 3,2 hektar. Vi dyrker over 40 slags grøntsager uden sprøjtemidler og kunstgødning, med levende jorddække og minimal jordbearbejdning. Som medlem får du en kasse med det bedste fra marken hver uge – og du er velkommen til at kigge forbi.',
+  en:'Kildegården is a small regenerative farm of 3.2 hectares. We grow more than 40 kinds of vegetables without pesticides or synthetic fertiliser, with living ground cover and minimal tillage. As a member you get a box of the best from the field every week – and you’re welcome to visit.',
+  es:'Kildegården es una pequeña finca regenerativa de 3,2 hectáreas. Cultivamos más de 40 tipos de hortalizas sin pesticidas ni abonos sintéticos, con cubierta vegetal viva y laboreo mínimo. Como socio recibes cada semana una caja con lo mejor del campo, y puedes venir a visitarnos cuando quieras.'},
+ pickup:{da:'Gården, torsdag kl. 15–18 · Byens Madhus, fredag kl. 10–14',en:'The farm, Thursday 3–6 pm · Byens Madhus, Friday 10 am–2 pm',es:'La finca, jueves de 15 a 18 h · Byens Madhus, viernes de 10 a 14 h'},
+ terms:{da:'Andelen betales forud for hele sæsonen eller i to rater.\nIndholdet følger sæsonen og vejret – nogle uger er der mere, andre mindre.\nKassen hentes på det valgte sted; uafhentede kasser går til madspildsprojekt.\nBesked om ferie senest mandag, så springer vi ugen over.\nMedlemskabet gælder én sæson og kan ikke refunderes, men kan overdrages.',
+  en:'The share is paid in advance for the whole season or in two instalments.\nThe contents follow the season and the weather – some weeks there is more, others less.\nThe box is collected at the chosen place; uncollected boxes go to a food-waste project.\nTell us about holidays by Monday and we’ll skip that week.\nMembership covers one season and is non-refundable, but can be transferred.',
+  es:'La cuota se paga por adelantado para toda la temporada o en dos plazos.\nEl contenido sigue la temporada y el tiempo: algunas semanas hay más y otras menos.\nLa caja se recoge en el lugar elegido; las cajas no recogidas van a un proyecto contra el desperdicio.\nAvisa de tus vacaciones antes del lunes y saltamos esa semana.\nLa cuota es para una temporada y no se reembolsa, pero se puede ceder.'}};
+const cv=k=>CSA[k]!=null?CSA[k]:L(CSA_DEF[k]);
+const csaCount=()=>CSA.members.small+CSA.members.large;
+const csaWeeks=()=>Math.max(1,CSA.w2-CSA.w1+1);
+const STORE={kale:38,leek:62,beet:120};
+function cropAvail(c){let r=0;S.beds.filter(b=>b.c===c&&b.plan>0).forEach(b=>r+=Math.max(0,b.plan-b.h));return Math.round((r+(STORE[c]||0))*10)/10}
+function boxRows(){
+ return CSA.box.map(x=>{const c=CSA.swaps[x.c]||x.c;const need=Math.round((CSA.members.small*x.s+CSA.members.large*x.l)*10)/10;const av=cropAvail(c);
+  let alt=null;if(av<need){alt=Object.keys(CROPS).filter(k=>k!==c&&CSA.crops.includes(k)&&!CSA.box.some(y=>(CSA.swaps[y.c]||y.c)===k)&&CROPS[k].f===CROPS[c].f).map(k=>({k,av:cropAvail(k)})).filter(o=>o.av>=need).sort((a,b)=>b.av-a.av)[0]||null}
+  return {orig:x.c,c,need,av,ok:av>=need,alt,swapped:!!CSA.swaps[x.c]}});
+}
+function csaReply(){
+ if(!CSA.on)return t('csa_off')+'.';
+ const r=boxRows(),bad=r.filter(x=>!x.ok);
+ const head=tr(`I denne uge skal der pakkes ${csaCount()} CSA-kasser: ${CSA.members.small} små og ${CSA.members.large} store.`,`This week ${csaCount()} CSA boxes need packing: ${CSA.members.small} small and ${CSA.members.large} large.`,`Esta semana hay que preparar ${csaCount()} cajas CSA: ${CSA.members.small} pequeñas y ${CSA.members.large} grandes.`);
+ const items=r.map(x=>`${L(CROPS[x.c])} ${nf(x.need,1)} kg`).join(', ');
+ const warn=bad.length?' '+bad.map(x=>tr(`Der mangler ${nf(x.need-x.av,1)} kilo ${L(CROPS[x.c]).toLowerCase()}`,`${nf(x.need-x.av,1)} kilos of ${L(CROPS[x.c]).toLowerCase()} are missing`,`Faltan ${nf(x.need-x.av,1)} kilos de ${L(CROPS[x.c]).toLowerCase()}`)+(x.alt?tr(` – byt evt. til ${L(CROPS[x.alt.k]).toLowerCase()}.`,` – consider swapping for ${L(CROPS[x.alt.k]).toLowerCase()}.`,` – puedes cambiarla por ${L(CROPS[x.alt.k]).toLowerCase()}.`):'.')).join(' '):' '+t('all_ready')+'.';
+ return head+' '+tr('Indhold','Contents','Contenido')+': '+items+'.'+warn;
+}
+function csaBoxCard(compact){
+ const r=boxRows(),bad=r.filter(x=>!x.ok).length;
+ if(compact) return '<section class="card csa-strip"><div class="row" style="flex-wrap:wrap;gap:12px 24px"><div class="row" style="gap:14px;flex-wrap:wrap"><span class="big">'+csaCount()+'</span><span><b style="font-weight:600">CSA · '+t('boxes')+' '+tr('i uge 45','in week 45','en la semana 45')+'</b><br><span class="small muted">'+CSA.members.small+' '+t('small').toLowerCase()+' · '+CSA.members.large+' '+t('large').toLowerCase()+' · '+t('pack_day')+'</span></span></div><span class="row" style="gap:12px;flex-wrap:wrap">'+(bad?'<span class="pill warn">'+bad+' '+t('missing_items')+'</span><a class="linkbtn" href="#plan">'+t('open_plan')+'</a>':'<span class="pill ok">'+t('all_ready')+'</span>')+'<a class="linkbtn" href="#csa">'+t('open_csa')+'</a></span></div></section>';
+ const rows=r.map(x=>'<tr><td style="font-weight:500"><span class="dot" style="display:inline-block;'+famVar(CROPS[x.c].f)+'"></span> '+L(CROPS[x.c])+(x.swapped?' <span class="pill">'+t('swapped')+'</span>':'')+'</td><td class="num">'+nf(x.need,1)+' kg</td><td class="num">'+nf(x.av,1)+' kg</td><td>'+(x.ok?'<span class="pill ok">'+t('enough')+'</span>':'<span class="pill warn">'+t('short')+' '+nf(x.need-x.av,1)+' kg</span>'+(x.alt?' <button class="btn" data-csa="swap" data-c="'+x.orig+'" data-to="'+x.alt.k+'">'+t('swap')+' '+L(CROPS[x.alt.k]).toLowerCase()+'</button>':''))+'</td></tr>').join('');
+ return '<section class="card"><div class="head"><h2>'+t('box_title')+' · '+csaCount()+' '+t('boxes')+'</h2><a href="#csa">'+t('open_csa')+'</a></div><p class="small muted">'+t('box_sub')+'</p><div class="tablewrap"><table><thead><tr><th>'+tr('Råvare','Produce','Producto')+'</th><th>'+t('need')+'</th><th>'+t('avail')+'</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
+}
+function siteHTML(full){
+ const left=CSA.max-csaCount(),wk=csaWeeks();
+ const crops=CSA.crops.map(k=>'<li>'+esc(L(CROPS[k]))+'</li>').join('');
+ const terms=cv('terms').split('\n').filter(x=>x.trim()).map(x=>'<li>'+esc(x)+'</li>').join('');
+ const share=(k,price,d)=>'<div class="site-share"><b>'+t(k)+'</b><span class="small">'+t(d)+'</span><span class="site-price num">'+kr(price)+'</span><span class="small">'+t('per_season')+' · '+kr(Math.round(price/wk))+' '+t('per_week')+'</span></div>';
+ const form=CSA.sent?'<p class="site-done" role="status">'+(CSA.sent==='wait'?t('s_wait'):t('s_thanks'))+'</p>':
+  '<form class="site-form" data-csaform="signup"><div class="site-grid"><label>'+t('s_name')+'<input id="su-name" required autocomplete="off"></label><label>'+t('s_email')+'<input id="su-email" type="email" required autocomplete="off"></label><label>'+t('s_phone')+'<input id="su-phone" autocomplete="off"></label><label>'+t('s_size')+'<select id="su-size"><option value="small">'+t('small')+' – '+kr(CSA.small)+'</option><option value="large">'+t('large')+' – '+kr(CSA.large)+'</option></select></label></div><label class="site-check"><input type="checkbox" id="su-accept" required> '+t('s_accept')+'</label><button type="submit">'+(left>0?t('s_submit'):t('s_full'))+'</button></form>';
+ return '<div class="site'+(full?' full':'')+'">'+
+  '<header class="site-hero"><p class="site-kicker">CSA · '+t('s_season')+' '+CSA.w1+'–'+CSA.w2+'</p><h2>'+esc(cv('name'))+'</h2><p>'+(left>0?left+' '+t('s_spots'):t('s_full'))+'</p><svg viewBox="0 0 400 60" aria-hidden="true" class="site-fields"><path d="M0 40 C80 20 160 50 240 30 S360 20 400 35 V60 H0z" fill="currentColor" opacity=".25"/><path d="M0 50 C100 35 200 58 300 42 S380 40 400 46 V60 H0z" fill="currentColor" opacity=".35"/></svg></header>'+
+  '<section><h3>'+t('s_about')+'</h3><p>'+esc(cv('desc'))+'</p></section>'+
+  '<section><h3>'+t('s_get')+'</h3><ul class="site-crops">'+crops+'</ul></section>'+
+  '<section><h3>'+t('s_shares')+'</h3><div class="site-shares">'+share('small',CSA.small,'share_small_d')+share('large',CSA.large,'share_large_d')+'</div></section>'+
+  '<section><h3>'+t('s_pickup')+'</h3><p>'+esc(cv('pickup'))+'</p></section>'+
+  '<section><h3>'+t('s_terms')+'</h3><ul>'+terms+'</ul></section>'+
+  '<section class="site-signup"><h3>'+t('s_signup')+'</h3>'+form+'</section>'+
+  '<p class="site-foot">'+t('s_demo')+'</p></div>';
+}
+function vCsa(){
+ if(!CSA.on) return '<div><p class="eyebrow">'+t('nav_csa')+'</p><h1 class="h1">'+t('csa_title')+'</h1><p class="sub" style="max-width:70ch">'+t('csa_sub')+'</p></div><section class="card" style="max-width:640px"><h2>'+t('csa_start_t')+'</h2><p>'+t('csa_start')+'</p><button class="btn primary" style="align-self:flex-start" data-csa="toggle">'+t('csa_enable')+'</button></section>';
+ const n=csaCount(),pct=Math.min(100,n/CSA.max*100);
+ const crops=['kale','cabbage','leek','garlic','onion','bean','pea','carrot','beet','parsnip','spinach','salad','chard','tomato','potato'].map(k=>'<label class="cropchk"><input type="checkbox" data-csa="crop" data-c="'+k+'"'+(CSA.crops.includes(k)?' checked':'')+'> '+L(CROPS[k])+'</label>').join('');
+ const fld=(id,label,val,type)=>'<div class="field"><label for="csa-'+id+'">'+label+'</label>'+(type==='area'?'<textarea class="input" id="csa-'+id+'" data-csa-field="'+id+'" rows="'+(id==='terms'?6:4)+'">'+esc(val)+'</textarea>':'<input class="input'+(type==='number'?' num':'')+'" id="csa-'+id+'" data-csa-field="'+id+'" type="'+(type||'text')+'" value="'+esc(val)+'">')+'</div>';
+ return '<div class="row" style="align-items:flex-end;flex-wrap:wrap"><div><p class="eyebrow">'+t('nav_csa')+'</p><h1 class="h1">'+t('csa_title')+'</h1><p class="sub" style="max-width:70ch">'+t('csa_sub')+'</p></div><label class="row" style="gap:10px;font-weight:600">'+t('csa_toggle')+'<button class="switch" role="switch" aria-checked="true" aria-label="'+t('csa_toggle')+'" data-csa="toggle"></button></label></div>'+
+ '<div class="grid g3">'+
+  '<section class="card"><div class="head"><h2>'+t('members')+'</h2><span class="small muted num">'+n+' / '+CSA.max+'</span></div><div class="bar"><i style="width:'+pct+'%"></i></div><p class="small muted">'+CSA.members.small+' '+t('small').toLowerCase()+' · '+CSA.members.large+' '+t('large').toLowerCase()+(CSA.wait?' · '+CSA.wait+' '+t('waitlist'):'')+'</p><p class="small"><span class="pill ok">'+CSA.paidPct+' % '+t('paid')+'</span></p></section>'+
+  '<section class="card"><h2>'+tr('Indtægt for sæsonen','Season revenue','Ingresos de la temporada')+'</h2><p class="big">'+kr(CSA.members.small*CSA.small+CSA.members.large*CSA.large)+'</p><p class="small muted">'+tr('betalt forud – før første høst','paid up front – before the first harvest','pagado por adelantado, antes de la primera cosecha')+'</p></section>'+
+  '<section class="card"><h2>'+t('recent')+'</h2><div class="list">'+CSA.recent.slice(0,3).map(m=>'<div class="row"><span>'+esc(m.n)+'</span><span class="small muted">'+t(m.s)+' · '+esc(m.d)+'</span></div>').join('')+'</div></section>'+
+ '</div>'+
+ csaBoxCard(false)+
+ '<div class="split" style="grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)">'+
+  '<section class="card"><h2>'+t('setup')+'</h2>'+fld('name',t('f_name'),cv('name'))+fld('desc',t('f_desc'),cv('desc'),'area')+
+   '<div class="grid g2" style="gap:10px">'+fld('w1',t('f_season')+' · '+tr('fra','from','de'),CSA.w1,'number')+fld('w2',tr('til','to','a'),CSA.w2,'number')+fld('small',t('f_small'),CSA.small,'number')+fld('large',t('f_large'),CSA.large,'number')+'</div>'+
+   fld('max',t('f_max'),CSA.max,'number')+fld('pickup',t('f_pickup'),cv('pickup'))+fld('terms',t('f_terms'),cv('terms'),'area')+
+   '<div class="field"><span class="small" style="font-weight:600">'+t('f_crops')+'</span><div class="cropgrid">'+crops+'</div></div></section>'+
+  '<section class="card"><div class="head"><h2>'+t('site')+'</h2><a href="#csa-site">'+t('open_site')+'</a></div><div class="browser"><div class="browser-bar"><i></i><i></i><i></i><span>kildegaarden.agelli.dk/csa</span></div><div id="csaPreview">'+siteHTML(false)+'</div></div></section>'+
+ '</div>';
+}
+function vCsaSite(){return '<p><a class="linkbtn" href="#csa">← '+t('back_app')+'</a></p><div class="browser"><div class="browser-bar"><i></i><i></i><i></i><span>kildegaarden.agelli.dk/csa</span></div>'+siteHTML(true)+'</div>'}
+document.addEventListener('input',e=>{
+ const el=e.target.closest('[data-csa-field]');if(!el)return;
+ const k=el.dataset.csaField,num=['w1','w2','small','large','max'].includes(k);
+ CSA[k]=num?Math.max(0,parseInt(el.value,10)||0):el.value;
+ const p=document.getElementById('csaPreview');if(p)p.innerHTML=siteHTML(false);
+});
+document.addEventListener('change',e=>{if(e.target.closest('[data-csa-field]'))render(true)});
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-csa]');if(!el)return;
+ const a=el.dataset.csa;
+ if(a==='toggle'){CSA.on=!CSA.on;toast(CSA.on?t('csa_on'):t('csa_off'))}
+ else if(a==='crop'){const c=el.dataset.c;CSA.crops=el.checked?[...new Set([...CSA.crops,c])]:CSA.crops.filter(x=>x!==c)}
+ else if(a==='swap'){CSA.swaps[el.dataset.c]=el.dataset.to;toast(t('swapped')+': '+L(CROPS[el.dataset.to]))}
+ render(true);
+});
+document.addEventListener('submit',e=>{
+ const f=e.target.closest('[data-csaform]');if(!f)return;e.preventDefault();
+ const name=document.getElementById('su-name').value.trim(),size=document.getElementById('su-size').value;if(!name)return;
+ if(csaCount()<CSA.max){CSA.members[size]++;CSA.sent='ok';
+  const d=new Date();CSA.recent.unshift({n:name,s:size,d:d.getDate()+'/'+(d.getMonth()+1)});
+  const msg={da:`Ny CSA-tilmelding: ${name}, ${size==='small'?'lille':'stor'} andel.`,en:`New CSA sign-up: ${name}, ${size} share.`,es:`Nueva inscripción CSA: ${name}, cuota ${size==='small'?'pequeña':'grande'}.`};
+  V.notifs.unshift({id:Date.now(),k:'order',tm:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),read:false,txt:msg});
+  if(V.field)say(L(msg));toast(t('new_member')+': '+name);
+ }else{CSA.wait++;CSA.sent='wait'}
+ render(true);
+ setTimeout(()=>{CSA.sent=null;},6000);
+});
+
+function csaSync(){const x=S.tasks.find(k=>k.id===3);if(x&&CSA.on){x.da='Pak '+csaCount()+' CSA-kasser';x.en='Pack '+csaCount()+' CSA boxes';x.es='Preparar '+csaCount()+' cajas CSA'}}
+EXAMPLES.da.splice(5,0,'Hvor mange CSA-kasser i denne uge?');EXAMPLES.en.splice(5,0,'How many CSA boxes this week?');EXAMPLES.es.splice(5,0,'¿Cuántas cajas CSA esta semana?');
+
+const VIEWS={overblik:vOverblik,plan:vPlan,csa:vCsa,'csa-site':vCsaSite,faellesskab:vCom,afsaetning:vMarket,marked:vMarked,noegletal:vNum,jord:vLand};
 function render(keepScroll){
+ csaSync();
  chrome();
  const y=window.scrollY;
  document.getElementById('view').innerHTML=VIEWS[route()]();
