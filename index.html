@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FutureFields Prototype</title>
+<title>Agelli</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&display=swap">
@@ -31,6 +31,7 @@
   --f-brassica:#6FB58C; --f-allium:#B793D1; --f-legume:#D9AE4A; --f-root:#E08A5A; --f-leaf:#8CCB64; --f-nightshade:#E07280; --f-cover:#93A8B8;
   color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -49,7 +50,7 @@ p{margin:0}
 .nav a:hover{background:var(--surface-2);color:var(--ink)}
 .nav a[aria-current="page"]{background:var(--primary);color:var(--on-primary)}
 .rail .demo-note{margin-top:auto;font-size:12.5px;color:var(--muted);padding:12px;border:1px dashed var(--line);border-radius:10px}
-main{min-width:0;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+main{min-width:0;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 120px}
 .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .farm{display:flex;align-items:center;gap:12px;min-width:0}
@@ -180,6 +181,32 @@ td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:middl
 .route{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px}
 .route span.stop{padding:3px 9px;border-radius:999px;background:var(--surface-2);font-weight:600}
 .route span.end{background:var(--primary);color:var(--on-primary)}
+.topr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fieldbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-weight:600;font-size:13px;display:inline-flex;gap:6px;align-items:center;color:var(--muted)}
+.fieldbtn[aria-pressed="true"]{background:var(--accent-soft);color:var(--on-accent-soft);border-color:var(--accent)}
+.bell{position:relative;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);padding:0}
+.bell svg{width:20px;height:20px}
+.badge{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--warn);color:var(--bg);font-size:11.5px;font-weight:700;display:grid;place-items:center}
+.banner.field{background:var(--primary);color:var(--on-primary)}
+.mic-fab{position:fixed;right:calc(20px + env(safe-area-inset-right, 0px));bottom:calc(20px + env(safe-area-inset-bottom, 0px));z-index:45;height:56px;border-radius:28px;padding:0 22px 0 18px;border:0;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.mic-fab svg{width:24px;height:24px}
+.mic-fab.listening{background:var(--warn);color:var(--bg)}
+body.fieldmode .mic-fab{height:72px;border-radius:36px;font-size:19px;padding:0 28px 0 22px}
+body.fieldmode .mic-fab svg{width:30px;height:30px}
+.vsheet{position:fixed;right:calc(16px + env(safe-area-inset-right, 0px));bottom:calc(92px + env(safe-area-inset-bottom, 0px));width:min(430px, calc(100vw - 32px));max-height:calc(100vh - 140px);overflow:auto;z-index:46;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 44px rgba(0,0,0,.28);padding:18px;display:flex;flex-direction:column;gap:12px}
+body.fieldmode .vsheet{bottom:calc(108px + env(safe-area-inset-bottom, 0px))}
+.npanel{top:calc(72px + env(safe-area-inset-top, 0px));bottom:auto;max-height:calc(100vh - 100px)}
+.bigmic{flex:none;width:84px;height:84px;padding:0;border-radius:50%;border:0;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;align-self:center}
+.bigmic svg{width:38px;height:38px}
+.bigmic.listening{background:var(--warn);color:var(--bg);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--warn) 45%,transparent)}50%{box-shadow:0 0 0 16px color-mix(in srgb,var(--warn) 0%,transparent)}}
+.said{font-size:14px;color:var(--muted)}
+.reply{background:var(--accent-soft);color:var(--on-accent-soft);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.reply .iconbtn{background:transparent;color:inherit;border-color:currentColor}
+.iconbtn svg{width:16px;height:16px}
+.notif{display:flex;gap:10px;align-items:flex-start}
+.notif.unread{font-weight:500}
+@media (prefers-reduced-motion: reduce){.bigmic.listening{animation:none}}
 .tabbar{display:none}
 @media (max-width: 1000px){
   .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -188,7 +215,7 @@ td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:middl
 @media (max-width: 760px){
   .app{grid-template-columns:1fr}
   .rail{display:none}
-  main{padding-block:14px calc(96px + env(safe-area-inset-bottom, 0px))}
+  main{padding-block:14px calc(170px + env(safe-area-inset-bottom, 0px))}
   .g3,.g2{grid-template-columns:minmax(0,1fr)}
   .beds{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding:6px max(6px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px));justify-content:space-around}
@@ -196,7 +223,12 @@ td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:middl
   .tabbar a svg{width:22px;height:22px}
   .tabbar a[aria-current="page"]{color:var(--primary)}
   .pool-row{grid-template-columns:96px 1fr 52px}
-  .toast{bottom:calc(84px + env(safe-area-inset-bottom, 0px))}
+  .toast{bottom:calc(150px + env(safe-area-inset-bottom, 0px))}
+  .mic-fab{bottom:calc(80px + env(safe-area-inset-bottom, 0px))}
+  .vsheet{bottom:calc(148px + env(safe-area-inset-bottom, 0px));max-height:calc(100vh - 220px)}
+  body.fieldmode .vsheet{bottom:calc(164px + env(safe-area-inset-bottom, 0px))}
+  .npanel{top:calc(64px + env(safe-area-inset-top, 0px));bottom:auto}
+  .fieldbtn span{display:none}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
@@ -208,7 +240,7 @@ td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:middl
   <aside class="rail" aria-label="Navigation">
     <div class="brand">
       <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="var(--primary)"/><path d="M6 27c6-5 22-5 28 0v3a16 16 0 0 1-28 0z" fill="var(--accent)"/><path d="M20 30V16m0 6c-4 0-6-3-6-6 4 0 6 2 6 6zm0-3c3 0 6-2 6-6-4 0-6 2-6 6z" stroke="var(--on-primary)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-      <b>FutureFields</b>
+      <b>Agelli</b>
     </div>
     <nav class="nav" id="nav"></nav>
     <p class="demo-note" id="railNote"></p>
@@ -217,19 +249,27 @@ td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:middl
     <div class="wrap">
       <div class="top">
         <div class="farm"><div class="avatar" aria-hidden="true">MK</div><div><strong>Kildegården</strong><small id="farmMeta"></small></div></div>
-        <div class="lang" role="group" aria-label="Language">
-          <button type="button" id="lang-da" data-lang="da">DA</button>
-          <button type="button" id="lang-en" data-lang="en">EN</button>
-          <button type="button" id="lang-es" data-lang="es">ES</button>
+        <div class="topr">
+          <button type="button" class="fieldbtn" id="fieldBtn" data-vc="field" aria-pressed="false"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16.5 8.5a5 5 0 0 1 0 7"/></svg><span></span></button>
+          <button type="button" class="bell" id="bell" data-vc="bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg><span class="badge" id="bellCount" hidden></span></button>
+          <div class="lang" role="group" aria-label="Language">
+            <button type="button" id="lang-da" data-lang="da">DA</button>
+            <button type="button" id="lang-en" data-lang="en">EN</button>
+            <button type="button" id="lang-es" data-lang="es">ES</button>
+          </div>
         </div>
       </div>
       <p class="banner" id="banner"></p>
+      <p class="banner field" id="fieldBanner" hidden></p>
       <div id="view" class="wrap" style="gap:20px;width:100%"></div>
     </div>
   </main>
 </div>
 <nav class="tabbar" id="tabbar" aria-label="Navigation"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button type="button" class="mic-fab" id="micFab" data-vc="open" aria-controls="vsheet"></button>
+<div class="vsheet" id="vsheet" role="dialog" aria-labelledby="vs-title" hidden></div>
+<div class="vsheet npanel" id="npanel" role="dialog" aria-label="Messages" hidden></div>
 
 <script>
 (function(){
@@ -506,7 +546,7 @@ function vOverblik(){
  const th=S.threads.slice(0,2).map(x=>'<div><p style="font-weight:600">'+esc(L(x.q))+'</p><p class="small muted">'+esc(x.who)+' · '+x.a.length+' '+t('answers')+'</p></div>').join('');
  return '<div><p class="eyebrow">'+t('date')+'</p><h1 class="h1">'+t('hello')+'</h1></div>'+
  '<div class="grid g3">'+
-  '<section class="card"><div class="head"><h2>'+t('today')+'</h2><span class="small muted num">'+S.tasks.filter(x=>x.done).length+'/'+S.tasks.length+'</span></div><div class="list">'+tasks+'</div></section>'+
+  '<section class="card"><div class="head"><h2>'+t('today')+' <span class="small muted num" style="font-weight:500">'+S.tasks.filter(x=>x.done).length+'/'+S.tasks.length+'</span></h2><button class="linkbtn" data-vc="readtasks">'+t('read_aloud')+'</button></div><div class="list">'+tasks+'</div></section>'+
   alert+
   '<section class="card"><div class="head"><h2>'+t('harvest')+'</h2><a href="#plan">'+t('open_plan')+'</a></div><p class="big">'+hp+' %</p><div class="bar"><i style="width:'+Math.min(hp,100)+'%"></i></div><p class="small muted">'+t('harvest_sub')+'</p></section>'+
   '<section class="card"><div class="head"><h2>'+t('orders')+'</h2><a href="#afsaetning">'+t('see_all')+'</a></div><p><span class="big">'+open.length+'</span> <span class="muted">'+t('orders_open')+'</span></p><div class="list">'+open.slice(0,2).map(o=>'<div class="row"><span><b style="font-weight:600">'+esc(o.who)+'</b><br><span class="small muted">'+esc(L(o))+'</span></span><span class="small muted num">'+esc(L(o.due))+'</span></div>').join('')+'</div></section>'+
@@ -768,12 +808,194 @@ document.addEventListener('submit',e=>{
  render(true);
 });
 
+/* ---------- Voice: speak commands, hear tasks and notifications ---------- */
+Object.assign(I18N.da,{voice_btn:'Tal',voice_title:'Tal til Agelli',listening:'Lytter … sig din kommando',tap_to_talk:'Tryk på mikrofonen og tal',you_said:'Du sagde',type_cmd:'Eller skriv en kommando',send:'Send',examples:'Prøv fx at sige',
+ mic_na:'Mikrofonen er ikke tilgængelig i denne visning. Skriv kommandoen eller tryk på et eksempel – svaret bliver stadig læst højt. Stemmestyring virker i Chrome og Safari, når prototypen åbnes som fil eller via et weblink.',
+ replay:'Læs op igen',notif_title:'Beskeder',read_all:'Læs nye op',simulate:'Simulér ny besked',field_mode:'Markmode',field_on:'Markmode er slået til. Nye beskeder bliver læst højt.',field_off:'Markmode er slået fra.',
+ read_aloud:'Læs op',close:'Luk',no_notif:'Ingen nye beskeder.',field_banner:'Markmode: nye beskeder læses højt automatisk, og du kan styre alt med stemmen.',new_msg:'Ny besked',stop:'Stop'});
+Object.assign(I18N.en,{voice_btn:'Talk',voice_title:'Talk to Agelli',listening:'Listening … say your command',tap_to_talk:'Tap the microphone and speak',you_said:'You said',type_cmd:'Or type a command',send:'Send',examples:'Try saying',
+ mic_na:'The microphone isn’t available in this view. Type the command or tap an example – the answer is still read aloud. Voice control works in Chrome and Safari when the prototype is opened as a file or via a web link.',
+ replay:'Read again',notif_title:'Messages',read_all:'Read new aloud',simulate:'Simulate new message',field_mode:'Field mode',field_on:'Field mode is on. New messages will be read aloud.',field_off:'Field mode is off.',
+ read_aloud:'Read aloud',close:'Close',no_notif:'No new messages.',field_banner:'Field mode: new messages are read aloud automatically, and you can control everything by voice.',new_msg:'New message',stop:'Stop'});
+Object.assign(I18N.es,{voice_btn:'Hablar',voice_title:'Habla con Agelli',listening:'Escuchando … di tu orden',tap_to_talk:'Toca el micrófono y habla',you_said:'Has dicho',type_cmd:'O escribe una orden',send:'Enviar',examples:'Prueba a decir',
+ mic_na:'El micrófono no está disponible en esta vista. Escribe la orden o toca un ejemplo: la respuesta se leerá en voz alta igualmente. El control por voz funciona en Chrome y Safari al abrir el prototipo como archivo o mediante un enlace web.',
+ replay:'Volver a leer',notif_title:'Mensajes',read_all:'Leer nuevos',simulate:'Simular mensaje nuevo',field_mode:'Modo campo',field_on:'Modo campo activado. Los mensajes nuevos se leerán en voz alta.',field_off:'Modo campo desactivado.',
+ read_aloud:'Leer en voz alta',close:'Cerrar',no_notif:'No hay mensajes nuevos.',field_banner:'Modo campo: los mensajes nuevos se leen en voz alta automáticamente y puedes controlarlo todo con la voz.',new_msg:'Mensaje nuevo',stop:'Parar'});
+I18N.da.obs_note='Tip: tryk på mikrofonen og sig fx “Notér i bed B3: bladlus på spinaten”.';
+I18N.en.obs_note='Tip: tap the microphone and say e.g. “Note in bed B3: aphids on the spinach”.';
+I18N.es.obs_note='Consejo: toca el micrófono y di p. ej. “Anota en el bancal B3: pulgones en las espinacas”.';
+const EXAMPLES={
+ da:['Læs dagens opgaver','Høstet 12 kilo grønkål i bed A1','Opgave 3 er færdig','Notér i bed B3: bladlus på spinaten','Læs mine beskeder','Hjælp'],
+ en:['Read today’s tasks','Harvested 12 kilos of kale in bed A1','Task 3 is done','Note in bed B3: aphids on the spinach','Read my messages','Help'],
+ es:['Lee las tareas de hoy','Cosechados 12 kilos de col rizada en el bancal A1','La tarea 3 está hecha','Anota en el bancal B3: pulgones en las espinacas','Lee mis mensajes','Ayuda']
+};
+ES['Cover T2 and B3 with fleece before Wednesday']='Cubrir T2 y B3 con manta térmica antes del miércoles';
+const V={open:false,npanel:false,listening:false,micBlocked:false,said:'',reply:'',field:false,timer:null,simIdx:0,
+ notifs:[
+  {id:1,k:'alert',tm:'06:40',read:false,txt:{da:'AI-varsel: nattefrost onsdag nat, minus 3 grader. Dæk tunnel T2 og bed B3 med fiberdug.',en:'AI alert: night frost Wednesday night, minus 3 degrees. Cover tunnel T2 and bed B3 with fleece.',es:'Alerta IA: helada el miércoles por la noche, menos 3 grados. Cubre el túnel T2 y el bancal B3 con manta térmica.'}},
+  {id:2,k:'order',tm:'07:15',read:false,txt:{da:'Ny ordre fra Restaurant Lyng: 12 kilo grønkål og 8 kilo rødbeder til fredag.',en:'New order from Restaurant Lyng: 12 kilos of kale and 8 kilos of beetroot for Friday.',es:'Nuevo pedido de Restaurant Lyng: 12 kilos de col rizada y 8 kilos de remolacha para el viernes.'}},
+  {id:3,k:'community',tm:'08:02',read:false,txt:{da:'Signe har svaret på dit spørgsmål om kålfluer.',en:'Signe answered your question about cabbage root fly.',es:'Signe ha respondido a tu pregunta sobre la mosca de la col.'}},
+  {id:4,k:'transport',tm:'08:30',read:true,txt:{da:'Grøn Budtjeneste har budt 320 kroner på transporten af grønkål.',en:'Grøn Budtjeneste bid 320 kroner for the kale transport.',es:'Grøn Budtjeneste ha ofertado 320 coronas por el transporte de la col rizada.'}}
+ ],
+ sim:[
+  {k:'order',txt:{da:'Byens Madhus spørger efter 15 kilo porrer til tirsdag.',en:'Byens Madhus is asking for 15 kilos of leeks for Tuesday.',es:'Byens Madhus pide 15 kilos de puerros para el martes.'}},
+  {k:'alert',txt:{da:'Vejr: regn ventet klokken 14, omkring 8 millimeter. Høst salaten inden.',en:'Weather: rain expected at 2 pm, about 8 millimetres. Harvest the salad before then.',es:'Tiempo: lluvia prevista a las 14:00, unos 8 milímetros. Cosecha la lechuga antes.'}},
+  {k:'transport',txt:{da:'Midt Cargo-cykler henter jordskokker hos dig torsdag klokken 8.',en:'Midt Cargo-cykler will collect Jerusalem artichokes from you on Thursday at 8.',es:'Midt Cargo-cykler recogerá los tupinambos el jueves a las 8.'}},
+  {k:'community',txt:{da:'Ole har inviteret dig til markvandring på Søbakken lørdag.',en:'Ole invited you to a farm walk at Søbakken on Saturday.',es:'Ole te ha invitado a una visita a la finca Søbakken el sábado.'}}
+ ]};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null;
+function say(text){
+ if(!text||!('speechSynthesis' in window))return;
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=LOC();u.rate=1;
+  const v=speechSynthesis.getVoices().find(v=>(v.lang||'').toLowerCase().replace('_','-').startsWith(S.lang));if(v)u.voice=v;
+  speechSynthesis.speak(u)}catch(e){}
+}
+function hush(){try{speechSynthesis.cancel()}catch(e){}}
+const unread=()=>V.notifs.filter(n=>!n.read);
+const NUMW={en:1,et:1,een:1,one:1,uno:1,una:1,to:2,two:2,dos:2,tre:3,three:3,tres:3,fire:4,four:4,cuatro:4,fem:5,five:5,cinco:5,seks:6,six:6,seis:6,syv:7,seven:7,siete:7,otte:8,eight:8,ocho:8,ni:9,nine:9,nueve:9,ti:10,ten:10,diez:10,elleve:11,eleven:11,once:11,tolv:12,twelve:12,doce:12,femten:15,fifteen:15,quince:15,tyve:20,twenty:20,veinte:20};
+function numAfter(s,re){const m=s.match(re);if(!m)return null;const w=m[1];return /^\d/.test(w)?parseFloat(w.replace(',','.')):(NUMW[w]??null)}
+function tasksReply(){
+ const n=S.tasks.length,d=S.tasks.filter(x=>x.done).length,m=n-d;
+ const head=tr(`Du har ${n} opgaver i dag. ${d} er klaret, ${m} mangler.`,`You have ${n} tasks today. ${d} done, ${m} to go.`,`Tienes ${n} tareas hoy. ${d} hechas, ${m} pendientes.`);
+ const items=S.tasks.map((x,i)=>tr(`Opgave ${i+1}: ${L(x)} – ${x.done?'klaret':'mangler'}.`,`Task ${i+1}: ${L(x)} – ${x.done?'done':'to do'}.`,`Tarea ${i+1}: ${L(x)}: ${x.done?'hecha':'pendiente'}.`));
+ return head+' '+items.join(' ');
+}
+function notifReply(all){
+ const list=all?V.notifs:unread();
+ if(!list.length)return t('no_notif');
+ const head=tr(`Du har ${list.length} nye beskeder.`,`You have ${list.length} new messages.`,`Tienes ${list.length} mensajes nuevos.`);
+ const body=list.map((x,i)=>`${i+1}: ${L(x.txt)}`).join(' ');
+ list.forEach(x=>x.read=true);
+ return head+' '+body;
+}
+function findBed(s){
+ const m=s.match(/\b(?:bed|bede|bancal)?\s*([abct])\s*-?\s*(\d)\b/i);
+ if(m){const id=(m[1]+m[2]).toUpperCase();const b=S.beds.find(x=>x.id===id);if(b)return b}
+ const ck=Object.keys(CROPS).find(k=>{const nm=L(CROPS[k]).toLowerCase();return s.includes(nm)||nm.split(' ').some(w=>w.length>4&&s.includes(w))});
+ if(ck){const bs=S.beds.filter(b=>b.c===ck);return bs.find(b=>b.plan>0)||bs[0]||null}
+ return null;
+}
+function handle(raw){
+ const s=raw.toLowerCase().replace(/[“”"?!]/g,'').trim();
+ if(!s)return '';
+ if(/\b(hjælp|help|ayuda)\b/.test(s)) return tr('Du kan sige: læs dagens opgaver. Høstet 12 kilo grønkål i bed A1. Opgave 3 er færdig. Notér i bed B3, bladlus på spinaten. Eller: læs mine beskeder.','You can say: read today’s tasks. Harvested 12 kilos of kale in bed A1. Task 3 is done. Note in bed B3, aphids on the spinach. Or: read my messages.','Puedes decir: lee las tareas de hoy. Cosechados 12 kilos de col rizada en el bancal A1. La tarea 3 está hecha. Anota en el bancal B3, pulgones en las espinacas. O bien: lee mis mensajes.');
+ if(/(markmode|field mode|modo campo)/.test(s)){V.field=!/(slå fra|sluk|\boff\b|desactiva|apaga)/.test(s);fieldTimer();return V.field?t('field_on'):t('field_off')}
+ if(/(notér|noter|notat|observation|\bnote\b|anota|nota\b|observa)/.test(s)){
+  const b=findBed(s)||S.beds.find(x=>x.id===S.sel);
+  let txt=raw.includes(':')?raw.slice(raw.indexOf(':')+1).trim():raw.replace(/^.*?\b(?:bed|bancal)\s*[a-dt]\s*\d\b[,\s]*/i,'').trim();
+  if(!txt||txt.toLowerCase()===s)txt=raw;
+  b.obs.unshift(txt);S.sel=b.id;
+  return tr(`Observation gemt i bed ${b.id}: ${txt}.`,`Observation saved in bed ${b.id}: ${txt}.`,`Observación guardada en el bancal ${b.id}: ${txt}.`);
+ }
+ if(/(færdig|klaret|klar med|udført|afsluttet|\bdone\b|finished|complete|hecha|hecho|terminad|completad)/.test(s)){
+  let i=numAfter(s,/(?:opgave|opgaven|task|tarea|nummer|number|número)\s+(?:nr\.?\s*)?(\d+|[a-zæøåéíóú]+)/);
+  let x=i?S.tasks[i-1]:null;
+  if(!x){const words=s.split(/\s+/).filter(w=>w.length>4);x=S.tasks.find(tk=>words.some(w=>L(tk).toLowerCase().includes(w)));i=x?S.tasks.indexOf(x)+1:null}
+  if(!x)return tr('Hvilken opgave? Sig fx: opgave 2 er færdig.','Which task? Say e.g.: task 2 is done.','¿Qué tarea? Di p. ej.: la tarea 2 está hecha.');
+  if(x.done)return tr(`Opgave ${i} var allerede klaret.`,`Task ${i} was already done.`,`La tarea ${i} ya estaba hecha.`);
+  x.done=true;const m=S.tasks.filter(t=>!t.done).length;
+  return tr(`Opgave ${i} er markeret som klaret: ${L(x)}. Der mangler ${m}.`,`Task ${i} marked as done: ${L(x)}. ${m} to go.`,`Tarea ${i} marcada como hecha: ${L(x)}. Quedan ${m}.`);
+ }
+ const kg=numAfter(s,/(\d+(?:[.,]\d+)?)\s*(?:kilo|kg)/)??numAfter(s,/\b([a-zæøåéíóú]+)\s+(?:kilo|kg)/);
+ if(/(høst|harvest|cosech|kilo|\bkg\b)/.test(s)){
+  if(!kg)return tr('Hvor meget? Sig fx: høstet 12 kilo grønkål i bed A1.','How much? Say e.g.: harvested 12 kilos of kale in bed A1.','¿Cuánto? Di p. ej.: cosechados 12 kilos de col rizada en el bancal A1.');
+  const b=findBed(s);
+  if(!b)return tr('Hvilket bed? Sig fx: høstet 12 kilo i bed A1.','Which bed? Say e.g.: harvested 12 kilos in bed A1.','¿Qué bancal? Di p. ej.: cosechados 12 kilos en el bancal A1.');
+  b.h=Math.round((b.h+kg)*10)/10;S.sel=b.id;const c=L(CROPS[b.c]).toLowerCase();
+  const pl=b.plan?tr(` Høstet i alt ${nf(b.h,1)} af ${nf(b.plan)} kilo, ${Math.round(b.h/b.plan*100)} procent af planen.`,` ${nf(b.h,1)} of ${nf(b.plan)} kilos harvested in total, ${Math.round(b.h/b.plan*100)} percent of plan.`,` En total ${nf(b.h,1)} de ${nf(b.plan)} kilos, el ${Math.round(b.h/b.plan*100)} por ciento del plan.`):'';
+  return tr(`Registreret ${nf(kg,1)} kilo ${c} i bed ${b.id}.`,`Recorded ${nf(kg,1)} kilos of ${c} in bed ${b.id}.`,`Registrados ${nf(kg,1)} kilos de ${c} en el bancal ${b.id}.`)+pl;
+ }
+ if(/(opgave|to-do|todo|gøremål|i dag|dagens|task|today|tarea|hoy|pendiente)/.test(s)) return tasksReply();
+ if(/(besked|notifikation|meddelelse|nyheder|message|notification|alert|mensaje|aviso|notific)/.test(s)) return notifReply(false);
+ return tr('Det forstod jeg ikke helt. Sig “hjælp” for at høre, hvad du kan sige.','I didn’t quite get that. Say “help” to hear what you can say.','No lo he entendido bien. Di “ayuda” para oír lo que puedes decir.');
+}
+function runCommand(text){
+ if(V.listening){V.listening=false;try{rec&&rec.abort()}catch(e){}}
+ V.said=text;V.reply=handle(text);V.open=true;
+ render(true);say(V.reply);
+}
+function listen(){
+ if(V.listening){try{rec&&rec.stop()}catch(e){}V.listening=false;renderVoice();return}
+ if(!SR){V.micBlocked=true;renderVoice();return}
+ hush();
+ try{
+  rec=new SR();rec.lang=LOC();rec.interimResults=true;rec.maxAlternatives=1;
+  rec.onresult=e=>{let fin='',tmp='';for(const r of e.results){if(r.isFinal)fin+=r[0].transcript;else tmp+=r[0].transcript}
+   if(fin){V.listening=false;runCommand(fin.trim())}else{V.said=tmp;renderVoice()}};
+  rec.onerror=e=>{V.listening=false;if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture')V.micBlocked=true;renderVoice()};
+  rec.onend=()=>{if(V.listening){V.listening=false;renderVoice()}};
+  rec.start();V.listening=true;V.micBlocked=false;V.said='';
+ }catch(e){V.listening=false;V.micBlocked=true}
+ renderVoice();
+}
+function pushNotif(){
+ const n=V.sim[V.simIdx%V.sim.length];V.simIdx++;
+ const d=new Date();const tm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+ const item={id:Date.now(),k:n.k,tm,read:false,txt:n.txt};V.notifs.unshift(item);
+ if(V.field){item.read=true;say(t('new_msg')+'. '+L(n.txt))}
+ toast(t('new_msg')+': '+L(n.txt));renderVoice();
+}
+function fieldTimer(){clearInterval(V.timer);V.timer=null;if(V.field)V.timer=setInterval(()=>{if(V.simIdx<V.sim.length)pushNotif();else{clearInterval(V.timer);V.timer=null}},25000)}
+const MIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+const SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const NK={alert:'Warning',order:'PaperPlane',community:'Chat',transport:'Globe'};
+function renderVoice(){
+ document.body.classList.toggle('fieldmode',V.field);
+ const fb=document.getElementById('fieldBtn');fb.setAttribute('aria-pressed',V.field);fb.querySelector('span').textContent=t('field_mode');
+ const u=unread().length,bc=document.getElementById('bellCount');bc.textContent=u;bc.hidden=!u;
+ document.getElementById('bell').setAttribute('aria-label',t('notif_title')+(u?' ('+u+')':''));
+ const fab=document.getElementById('micFab');fab.classList.toggle('listening',V.listening);fab.setAttribute('aria-expanded',V.open);
+ fab.innerHTML=MIC+'<span>'+(V.listening?t('stop'):t('voice_btn'))+'</span>';
+ const fbn=document.getElementById('fieldBanner');fbn.hidden=!V.field;fbn.textContent=t('field_banner');
+ const vs=document.getElementById('vsheet');vs.hidden=!V.open;
+ if(V.open){
+  vs.innerHTML='<div class="row"><h2 id="vs-title" style="font-family:var(--display);font-size:22px;font-weight:600">'+t('voice_title')+'</h2><button class="iconbtn" data-vc="close" aria-label="'+t('close')+'">×</button></div>'+
+  '<button class="bigmic'+(V.listening?' listening':'')+'" data-vc="listen" aria-label="'+(V.listening?t('stop'):t('tap_to_talk'))+'">'+MIC+'</button>'+
+  '<p class="small muted" style="text-align:center" aria-live="polite">'+(V.listening?t('listening'):t('tap_to_talk'))+'</p>'+
+  (V.micBlocked?'<p class="locked small">'+t('mic_na')+'</p>':'')+
+  (V.said?'<p class="said"><b>'+t('you_said')+':</b> “'+esc(V.said)+'”</p>':'')+
+  (V.reply?'<div class="reply" aria-live="polite"><p style="flex:1">'+esc(V.reply)+'</p><button class="iconbtn" data-vc="replay" aria-label="'+t('replay')+'">'+SPK+'</button></div>':'')+
+  '<form class="inline" data-vcform="cmd"><div class="field"><label for="vc-text">'+t('type_cmd')+'</label><input class="input" id="vc-text" autocomplete="off"></div><button class="btn primary" type="submit">'+t('send')+'</button></form>'+
+  '<div class="stack"><p class="small" style="font-weight:600">'+t('examples')+'</p><div class="filters">'+EXAMPLES[S.lang].map((x,i)=>'<button data-vc="ex" data-i="'+i+'">'+esc(x)+'</button>').join('')+'</div></div>';
+ }
+ const np=document.getElementById('npanel');np.hidden=!V.npanel;
+ if(V.npanel){
+  np.innerHTML='<div class="row"><h2 style="font-family:var(--display);font-size:22px;font-weight:600">'+t('notif_title')+'</h2><button class="iconbtn" data-vc="nclose" aria-label="'+t('close')+'">×</button></div>'+
+  '<div class="btns"><button class="btn primary" data-vc="readnew">'+SPK.replace('<svg','<svg width="16" height="16"')+' '+t('read_all')+'</button><button class="btn" data-vc="sim">'+t('simulate')+'</button></div>'+
+  '<div class="list">'+V.notifs.map(n=>'<div class="notif'+(n.read?'':' unread')+'"><span style="flex:1;min-width:0"><span class="small muted">'+n.tm+(n.read?'':' · <b style="color:var(--warn)">●</b>')+'</span><br>'+esc(L(n.txt))+'</span><button class="iconbtn" data-vc="readone" data-id="'+n.id+'" aria-label="'+t('read_aloud')+'">'+SPK+'</button></div>').join('')+'</div>';
+ }
+}
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-vc]');if(!el)return;
+ const a=el.dataset.vc;
+ if(a==='open'){if(!V.open){V.open=true;V.npanel=false;listen()}else if(V.listening){listen()}else{V.open=false;hush()}renderVoice();return}
+ if(a==='close'){V.open=false;if(V.listening)listen();hush()}
+ else if(a==='listen')listen();
+ else if(a==='replay')say(V.reply);
+ else if(a==='ex'){runCommand(EXAMPLES[S.lang][+el.dataset.i]);return}
+ else if(a==='bell'){V.npanel=!V.npanel;if(V.npanel)V.open=false}
+ else if(a==='nclose'){V.npanel=false;hush()}
+ else if(a==='readnew'){const r=notifReply(false);say(r);render(true)}
+ else if(a==='readone'){const n=V.notifs.find(x=>x.id==el.dataset.id);if(n){n.read=true;say(L(n.txt))}}
+ else if(a==='sim')pushNotif();
+ else if(a==='field'){V.field=!V.field;fieldTimer();say(V.field?t('field_on'):t('field_off'));toast(V.field?t('field_on'):t('field_off'))}
+ else if(a==='readtasks'){say(tasksReply());return}
+ renderVoice();
+});
+document.addEventListener('submit',e=>{
+ const f=e.target.closest('[data-vcform]');if(!f)return;e.preventDefault();
+ const v=document.getElementById('vc-text').value.trim();if(v)runCommand(v);
+});
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}
+
 const VIEWS={overblik:vOverblik,plan:vPlan,faellesskab:vCom,afsaetning:vMarket,marked:vMarked,noegletal:vNum,jord:vLand};
 function render(keepScroll){
  chrome();
  const y=window.scrollY;
  document.getElementById('view').innerHTML=VIEWS[route()]();
  if(keepScroll) window.scrollTo(0,y);
+ renderVoice();
 }
 
 /* ---------- Events ---------- */
